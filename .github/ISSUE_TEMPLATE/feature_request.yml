@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest a token-saving control, adapter, or evaluation.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What token cost or workflow problem should Condiments address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the command, host capability, or algorithm.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or references
+      description: Link primary research, provider documentation, or reproducible measurements.

@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "generated_at": "2026-09-14T22:56:01.824Z",
+  "usage_guard": {
+    "five_hour_remaining_percent": 14,
+    "weekly_remaining_percent": 24,
+    "ending_five_hour_remaining_percent": 4,
+    "ending_weekly_remaining_percent": 23,
+    "observed_five_hour_change_points": 10,
+    "model_calls": 0,
+    "reason": "Historical authenticated telemetry and local exact corpora were sufficient; Codex CLI cannot exercise direct-provider output cap fields."
+  },
+  "dictionary": [
+    {
+      "corpus": "checkpoint-history",
+      "original_bytes": 444946,
+      "raw_json_bytes": 457053,
+      "encoded_bytes": 243,
+      "saved_bytes": 456810,
+      "encoded_byte_reduction": 0.999468,
+      "dictionary_entries": 1,
+      "encoded_records": 2,
+      "exact_recovery": true,
+      "some_model_visible_dictionary": true,
+      "full_model_visible_dictionary": true,
+      "some_envelope_bytes": 4878,
+      "full_envelope_bytes": 2822
+    },
+    {
+      "corpus": "repetitive-command-output",
+      "original_bytes": 166937,
+      "raw_json_bytes": 173044,
+      "encoded_bytes": 226,
+      "saved_bytes": 172818,
+      "encoded_byte_reduction": 0.998694,
+      "dictionary_entries": 1,
+      "encoded_records": 2,
+      "exact_recovery": true,
+      "some_model_visible_dictionary": true,
+      "full_model_visible_dictionary": true,
+      "some_envelope_bytes": 4972,
+      "full_envelope_bytes": 2898
+    }
+  ],
+  "cap_shadow": {
+    "source_records": 72,
+    "groups": [
+      {
+        "provider": "openai",
+        "host": "codex-cli",
+        "level": "some",
+        "task_class": "standard",
+        "samples": 32,
+        "training_samples": 24,
+        "holdout_samples": 8,
+        "verified_holdout_samples": 8,
+        "fallback_cap": 2048,
+        "selected_cap": 384,
+        "selection_applied": true,
+        "selection_reason": "verified-telemetry",
+        "cap_exposure_reduction": 0.8125,
+        "verified_outputs_above_selected_cap": 0,
+        "quality_gate_passed": true,
+        "observed_holdout_output_tokens": 1705,
+        "estimated_actual_output_tokens_saved": 0
+      },
+      {
+        "provider": "openai",
+        "host": "codex-cli",
+        "level": "full",
+        "task_class": "standard",
+        "samples": 40,
+        "training_samples": 30,
+        "holdout_samples": 10,
+        "verified_holdout_samples": 10,
+        "fallback_cap": 512,
+        "selected_cap": 512,
+        "selection_applied": false,
+        "selection_reason": "no-smaller-safe-cap",
+        "cap_exposure_reduction": 0,
+        "verified_outputs_above_selected_cap": 0,
+        "quality_gate_passed": true,
+        "observed_holdout_output_tokens": 2352,
+        "estimated_actual_output_tokens_saved": 0
+      }
+    ],
+    "all_applied_groups_pass_quality": true
+  },
+  "claims": {
+    "dictionary": "Measured encoded JSON bytes and exact reconstruction; provider tokens not measured.",
+    "output_caps": "Measured cap-exposure reduction on chronological holdout; actual output-token saving is zero when all responses naturally end below both caps."
+  }
+}

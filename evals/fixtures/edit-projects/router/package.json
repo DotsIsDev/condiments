@@ -1,0 +1,6 @@
+{
+  "name": "condiments-edit-router",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}

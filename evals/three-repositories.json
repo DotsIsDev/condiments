@@ -1,0 +1,20 @@
+{
+  "repositories": [
+    {
+      "name": "Dots Launcher",
+      "path": "../../Dots Launcher",
+      "query": "IconService"
+    },
+    {
+      "name": "Hoop Metric",
+      "path": "../../Hoop-Metric",
+      "query": "LeagueRepository"
+    },
+    {
+      "name": "Anaheim Project",
+      "path": "../../AnaheimProject",
+      "query": "APIClient"
+    }
+  ]
+}
+

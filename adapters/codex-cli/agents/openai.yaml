@@ -1,0 +1,5 @@
+interface:
+  display_name: "Condiments"
+  short_description: "Token-efficiency presets for coding work"
+  default_prompt: "Use $condiments status to inspect the active token-efficiency policy."
+

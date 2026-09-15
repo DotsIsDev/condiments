@@ -1,0 +1,69 @@
+{
+  "answerSchema": "phase5-answer.schema.json",
+  "hosts": {
+    "codex-cli": {
+      "command": "codex",
+      "args": ["exec", "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "--output-schema", "{schemaPath}", "--json", "-C", "{repository}", "-"],
+      "outputFormat": "codex-jsonl",
+      "provider": "openai",
+      "timeoutMs": 120000
+    },
+    "claude-code": {
+      "command": "claude",
+      "args": ["-p", "--model", "haiku", "--effort", "low", "--max-budget-usd", "0.05", "--permission-mode", "plan", "--no-session-persistence", "--output-format", "json", "--json-schema", "{schemaJson}"],
+      "outputFormat": "claude-json",
+      "provider": "anthropic",
+      "timeoutMs": 120000
+    }
+  },
+  "workloads": [
+    {
+      "id": "one-line-fix",
+      "path": "fixtures/phase5-project",
+      "prompt": "Requirement: a subtotal of exactly 100 qualifies for loyalty discount. Diagnose the one-line bug without editing. Answer with the exact corrected condition only. Cite the buggy line.",
+      "expected": { "answerEquals": "subtotal >= 100", "evidence": [{ "file": "src/discount.mjs", "line": 2, "quoteIncludes": "subtotal > 100" }] }
+    },
+    {
+      "id": "multi-file-diagnosis",
+      "path": "fixtures/phase5-project",
+      "prompt": "Session expiry is wrong because two modules disagree on time units. Diagnose without editing. Answer with exact corrected first argument passed to isExpired. Cite the faulty caller line.",
+      "expected": { "answerIncludes": "Math.floor(session.expiresAtMs / 1000)", "evidence": [{ "file": "src/session.mjs", "line": 4, "quoteIncludes": "session.expiresAtMs" }] }
+    },
+    {
+      "id": "repository-exploration",
+      "path": "fixtures/phase5-project",
+      "prompt": "Find where applicationRouter is constructed. Answer with constructor symbol name only. Cite its call site.",
+      "expected": { "answerEquals": "createRouter", "evidence": [{ "file": "src/router.mjs", "line": 5, "quoteIncludes": "createRouter" }] }
+    },
+    {
+      "id": "test-debug-loop",
+      "path": "fixtures/phase5-project",
+      "prompt": "Run the test suite, diagnose the failing implementation, but do not edit. Answer with the exact corrected return statement. Cite the faulty source line and list the test command used.",
+      "expected": { "answerIncludes": "return value * 2;", "evidence": [{ "file": "src/double.mjs", "line": 2, "quoteIncludes": "value + 2" }] }
+    },
+    {
+      "id": "checkpoint-recovery",
+      "path": "fixtures/phase5-project",
+      "prompt": "A long archived history ends with the authoritative checkpoint. Find its ID without loading unrelated history broadly. Answer with checkpoint ID only. Cite the exact final checkpoint line.",
+      "expected": { "answerEquals": "CP-FINAL-7K9", "evidence": [{ "file": "data/history.log", "line": 12001, "quoteIncludes": "CP-FINAL-7K9" }] }
+    },
+    {
+      "id": "large-command-output",
+      "path": "fixtures/phase5-project",
+      "prompt": "Run `node scripts/noisy.mjs`. Find the actionable error token amid large output. Answer with token only. Cite the script line producing it and list the command used.",
+      "expected": { "answerEquals": "TOKEN_SALT_MISMATCH", "evidence": [{ "file": "scripts/noisy.mjs", "line": 4, "quoteIncludes": "TOKEN_SALT_MISMATCH" }] }
+    },
+    {
+      "id": "architecture-escalation",
+      "path": "fixtures/phase5-project",
+      "prompt": "Choose the delivery architecture satisfying all documented constraints. Answer with decision identifier only. Cite the decision line.",
+      "expected": { "answerEquals": "sqlite-outbox", "evidence": [{ "file": "docs/architecture.md", "line": 5, "quoteIncludes": "sqlite-outbox" }] }
+    },
+    {
+      "id": "unrelated-task-switch",
+      "path": "fixtures/phase5-project",
+      "prompt": "First determine default UI theme. Then switch domains: final requested answer is shipping retry policy only. Cite only retry-policy evidence; do not include theme in answer.",
+      "expected": { "answerIncludes": "exponential-jitter", "evidence": [{ "file": "src/retry.mjs", "line": 1, "quoteIncludes": "exponential-jitter" }] }
+    }
+  ]
+}

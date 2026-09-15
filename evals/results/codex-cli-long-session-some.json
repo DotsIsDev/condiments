@@ -1,0 +1,222 @@
+{
+  "version": 2,
+  "generatedAt": "2026-09-13T19:28:04.921Z",
+  "host": "codex-cli",
+  "mode": "some",
+  "route": {
+    "model": "gpt-5.6-terra",
+    "effort": "medium"
+  },
+  "compaction_threshold_tokens": 4000,
+  "compaction_scope": "body_after_prefix",
+  "thread_id": "01a09c3d-6163-7881-855e-38c0ee14ba8d",
+  "workspace": null,
+  "turns": [
+    {
+      "turn": 1,
+      "expected": "subtotal > 100|session.expiresAtMs|createRouter|exponential-jitter|midnight-blue|sqlite-outbox",
+      "answer": "subtotal > 100|session.expiresAtMs|createRouter|exponential-jitter|midnight-blue|sqlite-outbox",
+      "verification_passed": true,
+      "failures": [
+        "2026-09-13T19:27:46.728536Z  WARN codex_core::tasks: failed to flush rollout after emitting terminal turn event: thread 01a09c3d-6163-7881-855e-38c0ee14ba8d not found"
+      ],
+      "cli_usage": {
+        "input_tokens": 16016,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 40,
+        "reasoning_output_tokens": 0
+      },
+      "elapsed_ms": 4369
+    },
+    {
+      "turn": 2,
+      "expected": "subtotal > 100|session.expiresAtMs|createRouter|exponential-jitter|midnight-blue|sqlite-outbox|CP-FINAL-7K9",
+      "answer": "subtotal > 100|session.expiresAtMs|createRouter|exponential-jitter|midnight-blue|sqlite-outbox|CP-FINAL-7K9",
+      "verification_passed": true,
+      "failures": [],
+      "cli_usage": {
+        "input_tokens": 38917,
+        "cached_input_tokens": 11008,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 88,
+        "reasoning_output_tokens": 0
+      },
+      "elapsed_ms": 17167
+    }
+  ],
+  "authoritative_usage": {
+    "version": 1,
+    "provider": "openai",
+    "model": "gpt-5.6-terra",
+    "input_tokens": 54963,
+    "output_tokens": 443,
+    "reasoning_tokens": 0,
+    "cache_read_tokens": 22016,
+    "cache_write_tokens": 0,
+    "cache_write_5m_tokens": 0,
+    "cache_write_1h_tokens": 0,
+    "cache_read_reported": true,
+    "cache_write_reported": true,
+    "cache_telemetry_available": true,
+    "uncached_input_tokens": 32947,
+    "billable_input_tokens": 32947,
+    "total_tokens": 55406,
+    "cost_usd": null,
+    "tool_result_chars": 0,
+    "tool_calls": 0,
+    "model_calls": 3,
+    "compaction_count": 1,
+    "retry_count": 0,
+    "wall_time_ms": 21536,
+    "verification_passed": true,
+    "cache_hit_ratio": 0.40056
+  },
+  "telemetry": {
+    "detected": true,
+    "count": 1,
+    "modelCalls": 3,
+    "threadUsage": {
+      "input_tokens": 54963,
+      "cached_input_tokens": 22016,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 443,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 55406
+    },
+    "compactionsByTurn": {
+      "01a09c3d-72c9-7730-b888-8145e9e01ea9": 1
+    },
+    "maximumCompactionsInTurn": 1,
+    "usageRecordCount": 3,
+    "rollout": null,
+    "rolloutFile": "rollout-2026-09-13T15-27-43-01a09c3d-6163-7881-855e-38c0ee14ba8d.jsonl"
+  },
+  "budget": {
+    "maxTotalTokens": 75000,
+    "delayedTokenReserve": 10000,
+    "maxModelCalls": 5,
+    "delayedModelCallReserve": 1,
+    "maxCompactionsPerTurn": 1
+  },
+  "stopped_by_budget": null,
+  "recovery": {
+    "exact_state_recovered": true,
+    "checkpoint_recovery_verified": true,
+    "hook_events": [
+      {
+        "version": 1,
+        "timestamp": "2026-09-13T19:27:49.138Z",
+        "host": "codex-cli",
+        "event": "pre-compact",
+        "level": "some",
+        "action": "checkpoint",
+        "session_id": "01a09c3d-6163-7881-855e-38c0ee14ba8d",
+        "trigger": "auto",
+        "checkpoint_path": "D:\\Projects\\condiments\\.eval-workspaces\\some-o6RRdB\\.condiments\\checkpoints\\01a09c3d-6163-7881-855e-38c0ee14ba8d.json",
+        "reason": null
+      },
+      {
+        "version": 1,
+        "timestamp": "2026-09-13T19:27:56.814Z",
+        "host": "codex-cli",
+        "event": "post-compact",
+        "level": "some",
+        "action": "observed",
+        "session_id": "01a09c3d-6163-7881-855e-38c0ee14ba8d",
+        "trigger": "auto",
+        "checkpoint_path": null,
+        "reason": null
+      },
+      {
+        "version": 1,
+        "timestamp": "2026-09-13T19:27:57.482Z",
+        "host": "codex-cli",
+        "event": "restore",
+        "level": "some",
+        "action": "restore",
+        "session_id": "01a09c3d-6163-7881-855e-38c0ee14ba8d",
+        "trigger": null,
+        "checkpoint_path": null,
+        "reason": null
+      }
+    ],
+    "checkpoint": {
+      "version": 1,
+      "goal": "input_text <condiments> mayo (some): Direct, concise; report outcome, evidence, failures, next action. mustard (some): Target an exact path when given; search inside large files first. If a hit proves the answer, stop; read only needed callers/tests. ketchup (some): In long sessions, checkpoint only at milestones/pressure; skip checkpoint work for a short isolated task. ranch (some): Batch independent reads; never repeat success; filter noisy output in-command; keep model/reasoning/tool order stable. hot (some): Use low/balanced reasoning; raise for complex, ambiguous, or risky work. Guard: preserve verified correctness; never claim unconfirmed native changes. </condiments> Long-session state seed. Use no tools. Preserve these six exact values in order: subtotal > 100|session.expiresAtMs|createRouter|exponential-jitter|midnight-blue|sqlite-outbox. Return only JSON with that exact joined string as answer.",
+      "constraints": [
+        "input_text <condiments> mayo (some): Direct, concise; report outcome, evidence, failures, next action. mustard (some): Target an exact path when given; search inside large files first. If a hit proves the answer, stop; read only needed callers/tests. ketchup (some): In long sessions, checkpoint only at milestones/pressure; skip checkpoint work for a short isolated task. ranch (some): Batch indepe…"
+      ],
+      "decisions": [
+        "Recent verified assistant result: output_text {\"answer\":\"subtotal > 100|session.expiresAtMs|createRouter|exponential-jitter|midnight-blue|sqlite-outbox\"}"
+      ],
+      "changed_files": [
+        "r4/presentations/26.909.11809/skills/presentations/SKILL.md",
+        ".openai/hosting.json",
+        "r3/sites-building/SKILL.md",
+        "r3/sites-hosting/SKILL.md",
+        "r5/spreadsheets/SKILL.md",
+        "r5/excel-live-control/SKILL.md",
+        "r4/template-creator/26.909.11809/skills/template-creator/SKILL.md",
+        "r2/visualize/1.0.37/skills/visualize/SKILL.md",
+        "D:\\Projects\\condiments\\.eval-workspaces\\some-o6RRdB 2026-09-13 America/Toronto never user read-only managed restricted read restricted gpt-5.6-terra 3000 pragmatic default gpt-5.6",
+        "D:\\Projects\\condiments\\.eval-workspaces\\some-o6RRdB medium pragmatic default gpt-5.6"
+      ],
+      "commands_and_results": [],
+      "known_failures": [
+        "2026-09-13T19:27:43.722Z session_meta 01a09c3d-6163-7881-855e-38c0ee14ba8d 01a09c3d-6163-7881-855e-38c0ee14ba8d 2026-09-13T19:27:43.545Z D:\\Projects\\condiments\\.eval-workspaces\\some-o6RRdB Codex Desktop 0.154.0-alpha.6.2 exec user openai You are Codex, an agent based on GPT-5. You and the user share one workspace, and your job is to collaborate with them until their goal is genuinely handled. # Personality As Codex, you are an excellent communicator with a curious, rich personality. You match t…",
+        "2026-09-13T19:27:44.552Z response_item message msg_01a09c3d-65a8-74f0-bfc7-aad85d5b977c developer input_text <skills_instructions> ## Skills A skill is a set of local instructions to follow that is stored in a `SKILL.md` file. Below is the list of skills that can be used. Each entry includes a name, description, and a short path that can be expanded into an absolute path using the skill roots table. ### Skill roots - `r0` = `C:/Users/samue/.agents/skills` - `r1` = `C:/Users/samue/.codex/skills/…"
+      ],
+      "opaque_identifiers": [
+        "app-6943b73823548191a9f9216c6790c453",
+        "app-6943e6f4a928819195962de16fb9ffe4",
+        "app-6948b485f5bc8191adb4df13f369cec7",
+        "app-69490a4a06148191a0dd78606a3dbf1f",
+        "app-69491eceef3c8191beb70788b7840429",
+        "app-698a098735908191989f5788d7ee317e",
+        "app-69aef5b699a0819184512d57743fc1cd",
+        "app-69b2b5a768d4819190d3a86c5f12e6d9",
+        "app-69b31dc2110c8191b8b47dc98fe5a052",
+        "app-69b68652f0308191a27d7c7096cab4f6",
+        "app-69bc11db874881918718abaca20b68ce",
+        "app-69cacd9394a88191ba6564e1bb0430fa",
+        "app-69d88b99c5c481918e8da9225737e1e9",
+        "app-69dd11f3e50c8191b1ca48d03cf7e2ad",
+        "app-69ddbaba3fb48191a825f22c21b0599d",
+        "app-69f3c30d68288191bbd428a394a78407",
+        "app-69fe0bf66c8481919c513d799406436e",
+        "app-6a05e3b201788191be12b590b43e6ce3",
+        "app-6a05e8f22d408191b13ba3897157f6df",
+        "app-6a0694cbb2608191bbefb74ba810ab68",
+        "app-6a0d835ff1dc8191972eeabd14967446",
+        "app-6a172fe86f5481919f73cbc3bc3ad5bb",
+        "app-6a20b18a639081918c1b438f8381b27e",
+        "app-6a2baf2fad748191812393c3e00308ef",
+        "app-6a322b52a82c8191b7fb653f9e9f7891",
+        "app-6a3293e129088191abf0875820e839da",
+        "app-6a427a19b1f481919c5db13838af00c2",
+        "app-6a4f02d735388191959c8328877e0bbd",
+        "some-o6RRdB",
+        "2026-09-13",
+        "01a09c3d-6163-7881-855e-38c0ee14ba8d",
+        "01a09c3d-72c9-7730-b888-8145e9e01ea9"
+      ],
+      "artifact_paths": [
+        "D:\\Projects\\condiments\\.eval-workspaces\\some-o6RRdB\\.condiments\\archives\\01a09c3d-6163-7881-855e-38c0ee14ba8d-9f87243f79d098cb.jsonl"
+      ],
+      "next_action": "Resume the active task from this checkpoint; retrieve archived transcript details only when required."
+    },
+    "hook_preflight": {
+      "source": "static-config",
+      "profile": "condiments-eval-15176-1789327663366",
+      "hooks": [
+        "PreCompact",
+        "PostCompact",
+        "SessionStart",
+        "PreToolUse",
+        "Stop"
+      ]
+    }
+  },
+  "verification_passed": true
+}

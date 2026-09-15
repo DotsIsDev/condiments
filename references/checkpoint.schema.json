@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://condiments.local/schemas/checkpoint.schema.json",
+  "title": "Condiments checkpoint",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "goal",
+    "constraints",
+    "decisions",
+    "changed_files",
+    "commands_and_results",
+    "known_failures",
+    "opaque_identifiers",
+    "artifact_paths",
+    "next_action"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "goal": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "constraints": { "$ref": "#/$defs/shortList" },
+    "decisions": { "$ref": "#/$defs/shortList" },
+    "changed_files": { "$ref": "#/$defs/pathList" },
+    "commands_and_results": { "$ref": "#/$defs/resultList" },
+    "known_failures": { "$ref": "#/$defs/shortList" },
+    "opaque_identifiers": { "$ref": "#/$defs/pathList" },
+    "artifact_paths": { "$ref": "#/$defs/pathList" },
+    "next_action": { "type": "string", "minLength": 1, "maxLength": 2000 }
+  },
+  "$defs": {
+    "shortList": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1000 },
+      "uniqueItems": true
+    },
+    "pathList": {
+      "type": "array",
+      "maxItems": 50,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1000 },
+      "uniqueItems": true
+    },
+    "resultList": {
+      "type": "array",
+      "maxItems": 30,
+      "items": { "type": "string", "minLength": 1, "maxLength": 2000 },
+      "uniqueItems": true
+    }
+  }
+}

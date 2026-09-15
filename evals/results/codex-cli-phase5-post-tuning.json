@@ -1,0 +1,694 @@
+{
+  "version": 1,
+  "host": "codex-cli",
+  "modes": [
+    "some",
+    "full"
+  ],
+  "runs": [
+    {
+      "workload": "one-line-fix",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "subtotal >= 100",
+        "evidence": [
+          {
+            "file": "src/discount.mjs",
+            "line": 2,
+            "quote": "  return subtotal > 100 ? 0.1 : 0;"
+          }
+        ],
+        "commands": []
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32753,
+      "output_tokens": 128,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32753,
+      "billable_input_tokens": 32753,
+      "total_tokens": 32881,
+      "cost_usd": null,
+      "tool_result_chars": 121,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 10615,
+      "verification_passed": true
+    },
+    {
+      "workload": "one-line-fix",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "subtotal >= 100",
+        "evidence": [
+          {
+            "file": "src/discount.mjs",
+            "line": 2,
+            "quote": "  return subtotal > 100 ? 0.1 : 0;"
+          }
+        ],
+        "commands": []
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32758,
+      "output_tokens": 185,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32758,
+      "billable_input_tokens": 32758,
+      "total_tokens": 32943,
+      "cost_usd": null,
+      "tool_result_chars": 121,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 12401,
+      "verification_passed": true
+    },
+    {
+      "workload": "multi-file-diagnosis",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "Corrected first argument: Math.floor(session.expiresAtMs / 1000). The caller passes milliseconds, but isExpired expects seconds.",
+        "evidence": [
+          {
+            "file": "src/session.mjs",
+            "line": 4,
+            "quote": "  return isExpired(session.expiresAtMs, Math.floor(nowMs / 1000));"
+          },
+          {
+            "file": "src/auth.mjs",
+            "line": 1,
+            "quote": "export function isExpired(expiresAtSeconds, nowSeconds) {"
+          }
+        ],
+        "commands": [
+          "rg -n \"isExpired|AGENTS.md\" .",
+          "Get-Content src/session.mjs; Get-Content src/auth.mjs"
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 49450,
+      "output_tokens": 244,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 49450,
+      "billable_input_tokens": 49450,
+      "total_tokens": 49694,
+      "cost_usd": null,
+      "tool_result_chars": 494,
+      "tool_calls": 2,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 16934,
+      "verification_passed": true
+    },
+    {
+      "workload": "multi-file-diagnosis",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "Math.floor(session.expiresAtMs / 1000)",
+        "evidence": [
+          {
+            "file": "src/session.mjs",
+            "line": 4,
+            "quote": "  return isExpired(session.expiresAtMs, Math.floor(nowMs / 1000));"
+          },
+          {
+            "file": "src/auth.mjs",
+            "line": 1,
+            "quote": "export function isExpired(expiresAtSeconds, nowSeconds) {"
+          }
+        ],
+        "commands": [
+          "rg -n 'isExpired|AGENTS' .",
+          "Get-Content -LiteralPath src/session.mjs,src/auth.mjs"
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 49463,
+      "output_tokens": 221,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 49463,
+      "billable_input_tokens": 49463,
+      "total_tokens": 49684,
+      "cost_usd": null,
+      "tool_result_chars": 494,
+      "tool_calls": 2,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 14550,
+      "verification_passed": true
+    },
+    {
+      "workload": "repository-exploration",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "createRouter",
+        "evidence": [
+          {
+            "file": "src/router.mjs",
+            "line": 5,
+            "quote": "export const applicationRouter = createRouter(["
+          }
+        ],
+        "commands": [
+          "rg -n 'applicationRouter' ."
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32674,
+      "output_tokens": 106,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32674,
+      "billable_input_tokens": 32674,
+      "total_tokens": 32780,
+      "cost_usd": null,
+      "tool_result_chars": 67,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 9294,
+      "verification_passed": true
+    },
+    {
+      "workload": "repository-exploration",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "createRouter",
+        "evidence": [
+          {
+            "file": "src/router.mjs",
+            "line": 5,
+            "quote": "export const applicationRouter = createRouter(["
+          }
+        ],
+        "commands": [
+          "rg -n -C 3 --glob '!node_modules' --glob '!package-lock.json' 'applicationRouter' ."
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32815,
+      "output_tokens": 140,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32815,
+      "billable_input_tokens": 32815,
+      "total_tokens": 32955,
+      "cost_usd": null,
+      "tool_result_chars": 303,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 13857,
+      "verification_passed": true
+    },
+    {
+      "workload": "test-debug-loop",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "return value * 2;\n\nThe implementation adds 2 instead of doubling. Test suite: 1 failed (actual 6, expected 8). No files edited.",
+        "evidence": [
+          {
+            "file": "D:/Projects/condiments/evals/fixtures/phase5-project/src/double.mjs",
+            "line": 2,
+            "quote": "return value + 2;"
+          }
+        ],
+        "commands": [
+          "npm test"
+        ]
+      },
+      "failures": [
+        "answer expected 'return value * 2;', got 'return value * 2;\n\nThe implementation adds 2 instead of doubling. Test suite: 1 failed (actual 6, expected 8). No files edited.'",
+        "missing evidence src/double.mjs:2"
+      ],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 67015,
+      "output_tokens": 307,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 67015,
+      "billable_input_tokens": 67015,
+      "total_tokens": 67322,
+      "cost_usd": null,
+      "tool_result_chars": 1409,
+      "tool_calls": 3,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 19752,
+      "verification_passed": false
+    },
+    {
+      "workload": "test-debug-loop",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "return value * 2;",
+        "evidence": [
+          {
+            "file": "src/double.mjs",
+            "line": 2,
+            "quote": "return value + 2;"
+          },
+          {
+            "file": "test/double.test.mjs",
+            "line": 6,
+            "quote": "assert.equal(double(4), 8);"
+          }
+        ],
+        "commands": [
+          "npm test"
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 66808,
+      "output_tokens": 320,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 66808,
+      "billable_input_tokens": 66808,
+      "total_tokens": 67128,
+      "cost_usd": null,
+      "tool_result_chars": 1409,
+      "tool_calls": 4,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 22137,
+      "verification_passed": true
+    },
+    {
+      "workload": "checkpoint-recovery",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "CP-FINAL-7K9",
+        "evidence": [
+          {
+            "file": "data/history.log",
+            "line": 12001,
+            "quote": "CHECKPOINT CP-FINAL-7K9 status=verified next=deploy"
+          }
+        ],
+        "commands": [
+          "rg --files -g '*history*' -g '*archive*' -g '*checkpoint*' -g 'AGENTS.md'",
+          "Get-Content -LiteralPath 'data\\history.log' -Tail 6; (Get-Content -LiteralPath 'data\\history.log' | Measure-Object -Line).Lines"
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 49328,
+      "output_tokens": 263,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 49328,
+      "billable_input_tokens": 49328,
+      "total_tokens": 49591,
+      "cost_usd": null,
+      "tool_result_chars": 272,
+      "tool_calls": 2,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 17626,
+      "verification_passed": true
+    },
+    {
+      "workload": "checkpoint-recovery",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "CP-FINAL-7K9",
+        "evidence": [
+          {
+            "file": "data/history.log",
+            "line": 12001,
+            "quote": "CHECKPOINT CP-FINAL-7K9 status=verified next=deploy"
+          }
+        ],
+        "commands": []
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 66096,
+      "output_tokens": 226,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 66096,
+      "billable_input_tokens": 66096,
+      "total_tokens": 66322,
+      "cost_usd": null,
+      "tool_result_chars": 401,
+      "tool_calls": 3,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 21988,
+      "verification_passed": true
+    },
+    {
+      "workload": "large-command-output",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "TOKEN_SALT_MISMATCH",
+        "evidence": [
+          {
+            "file": "scripts/noisy.mjs",
+            "line": 4,
+            "quote": "console.error(\"ERROR TOKEN_SALT_MISMATCH recovery-required\");"
+          }
+        ],
+        "commands": [
+          "node scripts/noisy.mjs | Select-String -Pattern 'error|fail|fatal|exception|token' -CaseSensitive:$false",
+          "$n = 0; Get-Content -LiteralPath scripts/noisy.mjs | ForEach-Object { $n++; if ($_ -match 'error|fail|fatal|exception|token') { '{0}: {1}' -f $n, $_ } }"
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32846,
+      "output_tokens": 291,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32846,
+      "billable_input_tokens": 32846,
+      "total_tokens": 33137,
+      "cost_usd": null,
+      "tool_result_chars": 110,
+      "tool_calls": 2,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 19836,
+      "verification_passed": true
+    },
+    {
+      "workload": "large-command-output",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "TOKEN_SALT_MISMATCH",
+        "evidence": [
+          {
+            "file": "scripts/noisy.mjs",
+            "line": 4,
+            "quote": "console.error(\"ERROR TOKEN_SALT_MISMATCH recovery-required\");"
+          }
+        ],
+        "commands": [
+          "node scripts/noisy.mjs"
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32863,
+      "output_tokens": 185,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32863,
+      "billable_input_tokens": 32863,
+      "total_tokens": 33048,
+      "cost_usd": null,
+      "tool_result_chars": 233,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 12799,
+      "verification_passed": true
+    },
+    {
+      "workload": "architecture-escalation",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "sqlite-outbox",
+        "evidence": [
+          {
+            "file": "docs/architecture.md",
+            "line": 5,
+            "quote": "Decision: use `sqlite-outbox` because one transaction can persist domain state and pending delivery before asynchronous retries."
+          }
+        ],
+        "commands": [
+          "rg -n --hidden -S \"delivery|architecture|constraint|decision\" ."
+        ]
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 32744,
+      "output_tokens": 169,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 32744,
+      "billable_input_tokens": 32744,
+      "total_tokens": 32913,
+      "cost_usd": null,
+      "tool_result_chars": 363,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 15014,
+      "verification_passed": true
+    },
+    {
+      "workload": "architecture-escalation",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "sqlite-outbox",
+        "evidence": [
+          {
+            "file": "docs/architecture.md",
+            "line": 5,
+            "quote": "Decision: use `sqlite-outbox` because one transaction can persist domain state and pending delivery before asynchronous retries."
+          }
+        ],
+        "commands": []
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 49461,
+      "output_tokens": 187,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 49461,
+      "billable_input_tokens": 49461,
+      "total_tokens": 49648,
+      "cost_usd": null,
+      "tool_result_chars": 651,
+      "tool_calls": 2,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 15840,
+      "verification_passed": true
+    },
+    {
+      "workload": "unrelated-task-switch",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "some",
+      "answer": {
+        "answer": "Shipping retry policy: exponential-jitter.",
+        "evidence": [
+          {
+            "file": "src/retry.mjs",
+            "line": 1,
+            "quote": "export const SHIPPING_RETRY_POLICY = \"exponential-jitter\";"
+          }
+        ],
+        "commands": []
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 66202,
+      "output_tokens": 280,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 66202,
+      "billable_input_tokens": 66202,
+      "total_tokens": 66482,
+      "cost_usd": null,
+      "tool_result_chars": 465,
+      "tool_calls": 3,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 22577,
+      "verification_passed": true
+    },
+    {
+      "workload": "unrelated-task-switch",
+      "repository": "D:\\Projects\\condiments\\evals\\fixtures\\phase5-project",
+      "host": "codex-cli",
+      "mode": "full",
+      "answer": {
+        "answer": "The shipping retry policy is `exponential-jitter`.",
+        "evidence": [
+          {
+            "file": "src/retry.mjs",
+            "line": 1,
+            "quote": "export const SHIPPING_RETRY_POLICY = \"exponential-jitter\";"
+          }
+        ],
+        "commands": []
+      },
+      "failures": [],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 101424,
+      "output_tokens": 438,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 101424,
+      "billable_input_tokens": 101424,
+      "total_tokens": 101862,
+      "cost_usd": null,
+      "tool_result_chars": 2637,
+      "tool_calls": 5,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 31465,
+      "verification_passed": true
+    }
+  ],
+  "summaries": {
+    "some": {
+      "version": 1,
+      "runs": 8,
+      "verified_successes": 7,
+      "input_tokens": 363012,
+      "output_tokens": 1788,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 363012,
+      "billable_input_tokens": 363012,
+      "total_tokens": 364800,
+      "tool_result_chars": 3301,
+      "tool_calls": 15,
+      "model_calls": 8,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 131648,
+      "cost_usd": null,
+      "cost_complete": false,
+      "cache_hit_ratio": 0,
+      "cost_per_successful_task": null
+    },
+    "full": {
+      "version": 1,
+      "runs": 8,
+      "verified_successes": 8,
+      "input_tokens": 431688,
+      "output_tokens": 1902,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 431688,
+      "billable_input_tokens": 431688,
+      "total_tokens": 433590,
+      "tool_result_chars": 6249,
+      "tool_calls": 19,
+      "model_calls": 8,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 145037,
+      "cost_usd": null,
+      "cost_complete": false,
+      "cache_hit_ratio": 0,
+      "cost_per_successful_task": null
+    }
+  },
+  "comparisons": {},
+  "generatedAt": "2026-09-13T08:39:11.113Z"
+}

@@ -1,0 +1,102 @@
+{
+  "name": "condiments-token-efficiency",
+  "version": "0.1.0",
+  "description": "Portable token-efficiency controls for Codex CLI, Claude Code, Cursor, and OpenClaw.",
+  "author": "DotsIsDev",
+  "license": "MIT",
+  "homepage": "https://github.com/DotsIsDev/condiments#readme",
+  "bugs": {
+    "url": "https://github.com/DotsIsDev/condiments/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DotsIsDev/condiments.git"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "ai",
+    "claude-code",
+    "codex",
+    "cursor",
+    "llm",
+    "openclaw",
+    "prompt-compression",
+    "token-efficiency"
+  ],
+  "files": [
+    "adapters/",
+    "assets/",
+    "references/",
+    "research/",
+    "scripts/",
+    "sidecars/",
+    "src/",
+    "CHANGELOG.md",
+    "IMPLEMENTATION_PLAN.md",
+    "LICENSE",
+    "README.md",
+    "SKILL.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "condiments-token-efficiency": "scripts/install-adapter.mjs",
+    "condiments-install": "scripts/install-adapter.mjs",
+    "condiments": "scripts/condiments.mjs",
+    "condiments-result": "scripts/compact-tool-result.mjs",
+    "condiments-output-budget": "scripts/output-budget.mjs",
+    "condiments-checkpoint": "scripts/checkpoint.mjs",
+    "condiments-context-hook": "scripts/context-hook.mjs",
+    "condiments-result-hook": "scripts/result-hook.mjs",
+    "condiments-command-guard": "scripts/command-guard-hook.mjs",
+    "condiments-evaluate": "scripts/evaluate.mjs",
+    "condiments-adapter": "scripts/install-adapter.mjs",
+    "condiments-usage": "scripts/report-usage.mjs",
+    "condiments-cache": "scripts/prompt-cache.mjs",
+    "condiments-cache-hook": "scripts/cache-hook.mjs",
+    "condiments-codex-route": "scripts/codex-route.mjs",
+    "condiments-reasoning-hook": "scripts/reasoning-hook.mjs",
+    "condiments-provider-eval": "scripts/run-provider-eval.mjs",
+    "condiments-long-session-eval": "scripts/run-long-session-eval.mjs",
+    "condiments-completion": "scripts/completion-policy.mjs",
+    "condiments-tool-context": "scripts/tool-context.mjs",
+    "condiments-cache-lineage": "scripts/cache-lineage.mjs",
+    "condiments-output-governor": "scripts/output-governor.mjs",
+    "condiments-query-compressor": "scripts/query-compressor.mjs",
+    "condiments-log-dictionary": "scripts/log-dictionary.mjs",
+    "condiments-output-cap-train": "scripts/output-cap-train.mjs",
+    "condiments-memory": "scripts/reversible-memory.mjs",
+    "condiments-significance-output": "scripts/significance-output.mjs",
+    "condiments-llmlingua": "scripts/llmlingua-sidecar.mjs",
+    "condiments-qwen-thinking": "scripts/qwen-thinking.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "pack:check": "node scripts/check-package.mjs",
+    "release:check": "npm test && npm run pack:check && npm publish --dry-run --access public",
+    "prepublishOnly": "npm test && npm run pack:check",
+    "evaluate": "node scripts/evaluate.mjs --config evals/three-repositories.json --json evals/results/latest.json --markdown evals/results/latest.md",
+    "adapter": "node scripts/install-adapter.mjs",
+    "evaluate:provider": "node scripts/run-provider-eval.mjs --config evals/provider-workloads.json",
+    "evaluate:phase5:setup": "node evals/fixtures/phase5-project/generate-fixtures.mjs",
+    "evaluate:phase5": "node scripts/run-provider-eval.mjs --config evals/phase5-live-workloads.json",
+    "evaluate:phase5:report": "node scripts/consolidate-phase5-eval.mjs",
+    "evaluate:long-session": "node scripts/run-long-session-eval.mjs",
+    "evaluate:long-session:report": "node scripts/consolidate-long-session-eval.mjs",
+    "evaluate:mayo": "node scripts/run-mayo-quality-eval.mjs",
+    "evaluate:completion": "node scripts/run-edit-completion-eval.mjs",
+    "evaluate:tool-context": "node scripts/run-tool-context-eval.mjs",
+    "evaluate:tool-context:live": "node scripts/run-live-tool-context-eval.mjs",
+    "evaluate:cache-lineage": "node scripts/evaluate-cache-lineage.mjs",
+    "evaluate:learned": "node scripts/run-optimal-savings-eval.mjs",
+    "evaluate:responses": "node scripts/run-openai-responses-cap-eval.mjs"
+  },
+  "dependencies": {
+    "openai": "^7.15.0"
+  }
+}

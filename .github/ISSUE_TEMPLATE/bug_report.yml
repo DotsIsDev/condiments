@@ -1,0 +1,40 @@
+name: Bug report
+description: Report incorrect behavior or a broken adapter.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove secrets, private prompts, and proprietary source before submitting.
+  - type: dropdown
+    id: host
+    attributes:
+      label: Host
+      options:
+        - Codex CLI
+        - Claude Code
+        - Cursor
+        - OpenClaw
+        - Direct provider API
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Condiments version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include the command, expected result, actual result, and minimal steps.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs or telemetry
+      render: shell

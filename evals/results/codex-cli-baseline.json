@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "host": "codex-cli",
+  "modes": [
+    "baseline"
+  ],
+  "runs": [
+    {
+      "workload": "dots-icon-service",
+      "repository": "D:\\Projects\\Dots Launcher",
+      "host": "codex-cli",
+      "mode": "baseline",
+      "answer": {
+        "symbol": "IconService",
+        "file": "",
+        "line": 1,
+        "evidence": "Unable to inspect repository: read-only execution failed with CreateProcessWithLogonW error 1058. Definition location and defining line could not be verified."
+      },
+      "failures": [
+        "file expected 'DotsLauncher/IconService.cs', got ''",
+        "line expected 7, got 1",
+        "evidence missing 'class IconService'"
+      ],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 83932,
+      "output_tokens": 271,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 83932,
+      "billable_input_tokens": 83932,
+      "total_tokens": 84203,
+      "cost_usd": null,
+      "tool_result_chars": 0,
+      "tool_calls": 1,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 25818,
+      "verification_passed": false
+    },
+    {
+      "workload": "hoop-league-repository",
+      "repository": "D:\\Projects\\Hoop-Metric",
+      "host": "codex-cli",
+      "mode": "baseline",
+      "answer": {
+        "symbol": "LeagueRepository",
+        "file": "",
+        "line": 1,
+        "evidence": "Unable to inspect repository: read tools failed with CreateProcessWithLogonW error 1058. Definition not verified."
+      },
+      "failures": [
+        "file expected 'swift-hoopmetric-app/HoopMetric/LeagueRepository.swift', got ''",
+        "line expected 20, got 1",
+        "evidence missing 'class LeagueRepository'"
+      ],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 110964,
+      "output_tokens": 365,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 110964,
+      "billable_input_tokens": 110964,
+      "total_tokens": 111329,
+      "cost_usd": null,
+      "tool_result_chars": 0,
+      "tool_calls": 2,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 26043,
+      "verification_passed": false
+    },
+    {
+      "workload": "anaheim-api-client",
+      "repository": "D:\\Projects\\AnaheimProject",
+      "host": "codex-cli",
+      "mode": "baseline",
+      "answer": {
+        "symbol": "APIClient",
+        "file": "",
+        "line": 1,
+        "evidence": "Unable to inspect repository: local execution failed with CreateProcessWithLogonW error 1058. Definition and line number are unverified."
+      },
+      "failures": [
+        "file expected 'swift-anaheim-app/AnaheimExpressDriver/Networking/APIClient.swift', got ''",
+        "line expected 28, got 1",
+        "evidence missing 'actor APIClient'"
+      ],
+      "version": 1,
+      "provider": "openai",
+      "model": null,
+      "input_tokens": 118618,
+      "output_tokens": 297,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 118618,
+      "billable_input_tokens": 118618,
+      "total_tokens": 118915,
+      "cost_usd": null,
+      "tool_result_chars": 0,
+      "tool_calls": 3,
+      "model_calls": 1,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 20925,
+      "verification_passed": false
+    }
+  ],
+  "summaries": {
+    "baseline": {
+      "version": 1,
+      "runs": 3,
+      "verified_successes": 0,
+      "input_tokens": 313514,
+      "output_tokens": 933,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "uncached_input_tokens": 313514,
+      "billable_input_tokens": 313514,
+      "total_tokens": 314447,
+      "tool_result_chars": 0,
+      "tool_calls": 6,
+      "model_calls": 3,
+      "compaction_count": 0,
+      "retry_count": 0,
+      "wall_time_ms": 72786,
+      "cost_usd": null,
+      "cost_complete": false,
+      "cache_hit_ratio": 0,
+      "cost_per_successful_task": null
+    }
+  },
+  "comparisons": {},
+  "generatedAt": "2026-09-13T08:05:21.134Z"
+}

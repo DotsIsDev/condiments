@@ -1,0 +1,51 @@
+{
+  "answerSchema": "provider-answer.schema.json",
+  "hosts": {
+    "codex-cli": {
+      "command": "codex",
+      "args": ["exec", "--ephemeral", "--sandbox", "read-only", "--output-schema", "{schemaPath}", "--json", "-C", "{repository}", "-"],
+      "outputFormat": "codex-jsonl",
+      "provider": "openai",
+      "timeoutMs": 120000
+    },
+    "claude-code": {
+      "command": "claude",
+      "args": ["-p", "--model", "haiku", "--effort", "low", "--max-budget-usd", "0.05", "--permission-mode", "plan", "--no-session-persistence", "--output-format", "json", "--json-schema", "{schemaJson}"],
+      "outputFormat": "claude-json",
+      "provider": "anthropic",
+      "timeoutMs": 120000
+    }
+  },
+  "workloads": [
+    {
+      "id": "dots-icon-service",
+      "path": "../../Dots Launcher",
+      "prompt": "Find the first definition of symbol IconService. Return symbol, repository-relative file, one-based line, and exact defining-line evidence.",
+      "expected": {
+        "file": "DotsLauncher/IconService.cs",
+        "line": 7,
+        "evidenceIncludes": "class IconService"
+      }
+    },
+    {
+      "id": "hoop-league-repository",
+      "path": "../../Hoop-Metric",
+      "prompt": "Find the first class definition of symbol LeagueRepository. Return symbol, repository-relative file, one-based line, and exact defining-line evidence.",
+      "expected": {
+        "file": "swift-hoopmetric-app/HoopMetric/LeagueRepository.swift",
+        "line": 20,
+        "evidenceIncludes": "class LeagueRepository"
+      }
+    },
+    {
+      "id": "anaheim-api-client",
+      "path": "../../AnaheimProject",
+      "prompt": "Find the first actor definition of symbol APIClient. Return symbol, repository-relative file, one-based line, and exact defining-line evidence.",
+      "expected": {
+        "file": "swift-anaheim-app/AnaheimExpressDriver/Networking/APIClient.swift",
+        "line": 28,
+        "evidenceIncludes": "actor APIClient"
+      }
+    }
+  ]
+}
