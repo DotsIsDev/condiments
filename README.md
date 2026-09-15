@@ -144,11 +144,11 @@ Codex accepts `$cond` and `$condiments`. Text aliases may also trigger the skill
 
 | Control | Aliases | `some` | `full` |
 | --- | --- | --- | --- |
-| `mayo` | `mayonnaise` | Concise replies and quality-biased caps | Minimum complete reply, direct edits, task caps of 128/512/2,048 tokens |
+| `mayonnaise` | `mayo` | Concise replies and quality-biased caps | Minimum complete reply, direct edits, task caps of 128/512/2,048 tokens |
 | `mustard` | `must` | Load targeted files and retain about 65% of selected evidence | Prefer exact symbols/line regions and target about 35%, while locking required evidence |
 | `ketchup` | `ket` | Milestone summaries and checkpoints | Compressed state, reversible memory, and native recovery where supported |
 | `ranch` | `ran` | Batch obvious work, bound large output, preserve cache | Aggressive batching, dedupe, schema pruning, dictionary encoding, and cache-lineage protection |
-| `hot` | `hotsauce` | Adapt reasoning to task difficulty | Cheapest validated route first; escalate only when required quality is missing |
+| `hotsauce` | `hot` | Adapt reasoning to task difficulty | Cheapest validated route first; escalate only when required quality is missing |
 
 Examples:
 
