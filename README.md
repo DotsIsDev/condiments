@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/DotsIsDev/condiments/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/DotsIsDev/condiments/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://www.npmjs.com/package/@dotsisdev/condiments"><img alt="npm version" src="https://img.shields.io/npm/v/%40dotsisdev%2Fcondiments.svg"></a>
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-f4c542.svg"></a>
   <a href="https://skills.sh/DotsIsDev/condiments"><img alt="Agent Skill" src="https://img.shields.io/badge/agent_skill-condiments-e5482b.svg"></a>
   <img alt="Work in progress" src="https://img.shields.io/badge/status-work_in_progress-6a994e.svg">
@@ -72,7 +73,7 @@ npx --yes @dotsisdev/condiments@latest --host codex-cli --target .
 
 Valid hosts are `codex-cli`, `claude-code`, `cursor`, and `openclaw`.
 
-Until the npm package is published, install from a clone:
+To develop or install from source:
 
 ```bash
 git clone https://github.com/DotsIsDev/condiments.git
