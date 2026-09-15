@@ -1,6 +1,16 @@
 node_modules/
 .condiments/
 .eval-workspaces/
+
+# Generated evaluation telemetry
+evals/results/*.json
+
+# Optional Python sidecar environments and bytecode
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
 .env
 .env.*
 !.env.example

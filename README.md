@@ -116,12 +116,12 @@ The tiny concise-answer task used about 1% more total tokens because fixed Codex
 
 Read the evidence:
 
-- [Three-repository context evaluation](evals/results/latest.md)
-- [Patch-first live evaluation](evals/results/edit-completion-evaluation.md)
-- [Mayo output evaluation](evals/results/codex-cli-mayo-output-cap-live.md)
-- [Tool-context evaluation](evals/results/tool-context-evaluation.md)
-- [Lossless log and learned-cap evaluation](evals/results/optimal-savings-eval.md)
-- [Implementation and evaluation plan](IMPLEMENTATION_PLAN.md)
+- [Three-repository context evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/latest.md)
+- [Patch-first live evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/edit-completion-evaluation.md)
+- [Mayo output evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/codex-cli-mayo-output-cap-live.md)
+- [Tool-context evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/tool-context-evaluation.md)
+- [Lossless log and learned-cap evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/optimal-savings-eval.md)
+- [Implementation and evaluation plan](https://github.com/DotsIsDev/condiments/blob/main/docs/IMPLEMENTATION_PLAN.md)
 
 ## Skill
 
@@ -237,13 +237,14 @@ Full reviews:
 | `scripts/` | User-facing CLIs, hooks, installers, and evaluations |
 | `references/` | Runtime design and capability documentation |
 | `research/` | Primary-source research reviews |
+| `docs/` | Maintainer implementation and publishing guides |
 | `evals/` | Workloads, fixtures, schemas, and measured results |
 | `test/` | Deterministic Node.js test suite |
 | `sidecars/` | Optional learned-compression bridge |
 
 ## Contributing
 
-Ideas, workload traces with secrets removed, provider telemetry adapters, and reproducible evaluations are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+Ideas, workload traces with secrets removed, provider telemetry adapters, and reproducible evaluations are welcome. Read the [contribution guide](https://github.com/DotsIsDev/condiments/blob/main/CONTRIBUTING.md) before opening a pull request.
 
 ## License
 
