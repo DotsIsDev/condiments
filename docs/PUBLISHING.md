@@ -1,6 +1,6 @@
 # Publishing to npm
 
-The unscoped package name is `condiments-token-efficiency`. Unscoped npm packages are public. `publishConfig.access` also records public intent.
+The scoped package name is `@dotsisdev/condiments`. The `dotsisdev` npm user or organization must own that scope. Scoped packages default to private, so `publishConfig.access` records the required public intent.
 
 ## First publication
 
@@ -15,7 +15,7 @@ The unscoped package name is `condiments-token-efficiency`. Unscoped npm package
 3. Confirm the name is still free:
 
    ```sh
-   npm view condiments-token-efficiency version
+   npm view @dotsisdev/condiments version
    ```
 
    A registry `E404` means no public package currently occupies the name.
@@ -35,7 +35,7 @@ The unscoped package name is `condiments-token-efficiency`. Unscoped npm package
 6. Test from a clean directory:
 
    ```sh
-   npx --yes condiments-token-efficiency@latest --host codex-cli --target .
+   npx --yes @dotsisdev/condiments@latest --host codex-cli --target .
    ```
 
 ## Later releases

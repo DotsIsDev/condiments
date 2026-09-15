@@ -67,7 +67,7 @@ This path installs the portable skill instructions. Restart the agent, then invo
 Node.js 20 or newer is required. Native adapters add the hooks and configuration supported by each host:
 
 ```bash
-npx --yes condiments-token-efficiency@latest --host codex-cli --target .
+npx --yes @dotsisdev/condiments@latest --host codex-cli --target .
 ```
 
 Valid hosts are `codex-cli`, `claude-code`, `cursor`, and `openclaw`.

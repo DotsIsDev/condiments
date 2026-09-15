@@ -1,5 +1,5 @@
 {
-  "name": "condiments-token-efficiency",
+  "name": "@dotsisdev/condiments",
   "version": "0.1.0",
   "description": "Portable token-efficiency controls for Codex CLI, Claude Code, Cursor, and OpenClaw.",
   "author": "DotsIsDev",
@@ -44,9 +44,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "bin": {
-    "condiments-token-efficiency": "scripts/install-adapter.mjs",
+    "condiments": "scripts/install-adapter.mjs",
     "condiments-install": "scripts/install-adapter.mjs",
-    "condiments": "scripts/condiments.mjs",
+    "condiments-control": "scripts/condiments.mjs",
     "condiments-result": "scripts/compact-tool-result.mjs",
     "condiments-output-budget": "scripts/output-budget.mjs",
     "condiments-checkpoint": "scripts/checkpoint.mjs",
