@@ -58,6 +58,22 @@ The goal is simple: reduce paid and model-visible tokens while preserving the ex
 
 The installer preserves unrelated host settings and records which native capabilities are available. Restart the agent after installation, then invoke `/cond`, `/condiments`, `$cond`, or `$condiments` according to the host.
 
+#### Install globally for the Codex slash menu
+
+The Codex command above installs Condiments only for the target project. To make the `cond` and `condiments` skills available in every project, install them under your user profile. In PowerShell:
+
+```powershell
+npx --yes @dotsisdev/condiments@latest --host codex-cli --target "$env:USERPROFILE"
+```
+
+Fully quit and restart Codex after installation. Enabled skills appear in the slash menu as `/cond` and `/condiments`; `$cond` and `$condiments` remain the explicit skill-invocation forms.
+
+To upgrade or repair the global installation:
+
+```powershell
+npx --yes @dotsisdev/condiments@latest --host codex-cli --target "$env:USERPROFILE" --force
+```
+
 To upgrade or repair an installation, run the same command with `--force`:
 
 ```bash
@@ -106,7 +122,7 @@ Condiments targets host capabilities rather than a fixed model allowlist.
 
 | Environment | Models/providers | Invocation | Native additions |
 | --- | --- | --- | --- |
-| Codex CLI | Models offered by the active Codex host; live evaluation used `gpt-5.6-luna` | `$cond`, `$condiments` | Context management, compaction, large-read guard, cache/reasoning telemetry, capability-gated model routing |
+| Codex | Models offered by the active Codex host; live evaluation used `gpt-5.6-luna` | `/cond`, `/condiments` from the slash menu; `$cond`, `$condiments` explicitly | Context management, compaction, large-read guard, cache/reasoning telemetry, capability-gated model routing |
 | Claude Code | Claude models available to Claude Code | `/cond`, `/condiments` | Tool-result replacement, checkpoint restore, cache telemetry |
 | Cursor | Models available to Cursor Agent | `/cond`, `/condiments` | MCP result replacement, compaction, exposed cache fields |
 | OpenClaw | Models configured in OpenClaw | `/cond`, `/condiments` | Tokenjuice interception, `maxTokens`, pruning, compaction, cache retention |
