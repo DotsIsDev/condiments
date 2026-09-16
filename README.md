@@ -45,7 +45,33 @@ The goal is simple: reduce paid and model-visible tokens while preserving the ex
 
 ## Quick Start
 
-### Install the portable skill
+### Install from npm (recommended)
+
+[The public npm package](https://www.npmjs.com/package/@dotsisdev/condiments) installs the portable `condiments` and `cond` skills plus the native adapter supported by your host. Node.js 20 or newer is required.
+
+| Environment | Command |
+| --- | --- |
+| Codex CLI | `npx --yes @dotsisdev/condiments@latest --host codex-cli --target .` |
+| Claude Code | `npx --yes @dotsisdev/condiments@latest --host claude-code --target .` |
+| Cursor | `npx --yes @dotsisdev/condiments@latest --host cursor --target .` |
+| OpenClaw | `npx --yes @dotsisdev/condiments@latest --host openclaw --target .` |
+
+The installer preserves unrelated host settings and records which native capabilities are available. Restart the agent after installation, then invoke `/cond`, `/condiments`, `$cond`, or `$condiments` according to the host.
+
+To upgrade or repair an installation, run the same command with `--force`:
+
+```bash
+npx --yes @dotsisdev/condiments@latest --host codex-cli --target . --force
+```
+
+You can also install the CLI globally:
+
+```bash
+npm install --global @dotsisdev/condiments@latest
+condiments --host codex-cli --target .
+```
+
+### Install the prompt-only skill
 
 Install globally for Codex from this GitHub repository:
 
@@ -61,19 +87,9 @@ npx --yes skills add DotsIsDev/condiments --skill condiments -a cursor -g
 npx --yes skills add DotsIsDev/condiments --skill condiments -a openclaw -g
 ```
 
-This path installs the portable skill instructions. Restart the agent, then invoke `/cond`, `/condiments`, `$cond`, or `$condiments` according to the host.
+This route installs the portable prompt instructions only. It does not install native hooks, runtime helpers, or host configuration.
 
-### Install native adapters
-
-Node.js 20 or newer is required. Native adapters add the hooks and configuration supported by each host:
-
-```bash
-npx --yes @dotsisdev/condiments@latest --host codex-cli --target .
-```
-
-Valid hosts are `codex-cli`, `claude-code`, `cursor`, and `openclaw`.
-
-To develop or install from source:
+### Develop from source
 
 ```bash
 git clone https://github.com/DotsIsDev/condiments.git
@@ -82,7 +98,7 @@ npm install
 node scripts/install-adapter.mjs --host codex-cli --target /path/to/project
 ```
 
-Use `--force` to replace an older Condiments adapter. The installer preserves unrelated host settings and records capability receipts. `none` restores captured host configuration where native control exists.
+`none` restores captured host configuration where native control exists.
 
 ## Compatibility
 
