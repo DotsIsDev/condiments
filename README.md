@@ -45,9 +45,11 @@ The goal is simple: reduce paid and model-visible tokens while preserving the ex
 
 ## Quick Start
 
-### Install from npm (recommended)
+Requires Node.js 20 or newer.
 
-[The public npm package](https://www.npmjs.com/package/@dotsisdev/condiments) installs the portable `condiments` and `cond` skills plus the native adapter supported by your host. Node.js 20 or newer is required.
+### Install in a project
+
+Run the command for your agent from the project root. The installer adds the `cond` and `condiments` skills plus supported native integrations while preserving unrelated settings.
 
 | Environment | Command |
 | --- | --- |
@@ -56,54 +58,50 @@ The goal is simple: reduce paid and model-visible tokens while preserving the ex
 | Cursor | `npx --yes @dotsisdev/condiments@latest --host cursor --target .` |
 | OpenClaw | `npx --yes @dotsisdev/condiments@latest --host openclaw --target .` |
 
-The installer preserves unrelated host settings and records which native capabilities are available. Restart the agent after installation, then invoke `/cond`, `/condiments`, `$cond`, or `$condiments` according to the host.
+Restart the agent, then run `/cond full`. In Codex, `$cond full` also explicitly invokes the skill.
 
-#### Install globally for the Codex slash menu
+### Install globally in Codex
 
-The Codex command above installs Condiments only for the target project. To make the `cond` and `condiments` skills available in every project, install them under your user profile. In PowerShell:
+Use a user-profile target to make Condiments available in every project.
+
+PowerShell:
 
 ```powershell
 npx --yes @dotsisdev/condiments@latest --host codex-cli --target "$env:USERPROFILE"
 ```
 
-Fully quit and restart Codex after installation. Enabled skills appear in the slash menu as `/cond` and `/condiments`; `$cond` and `$condiments` remain the explicit skill-invocation forms.
+Bash:
 
-To upgrade or repair the global installation:
+```bash
+npx --yes @dotsisdev/condiments@latest --host codex-cli --target "$HOME"
+```
+
+Fully quit and restart Codex. `/cond` and `/condiments` then appear in the slash menu; `$cond` and `$condiments` remain available for explicit invocation.
+
+### Update or repair
+
+Repeat the relevant install command with `--force`. Example for a global PowerShell installation:
 
 ```powershell
 npx --yes @dotsisdev/condiments@latest --host codex-cli --target "$env:USERPROFILE" --force
 ```
 
-To upgrade or repair an installation, run the same command with `--force`:
+### Other install options
 
-```bash
-npx --yes @dotsisdev/condiments@latest --host codex-cli --target . --force
-```
-
-You can also install the CLI globally:
-
-```bash
-npm install --global @dotsisdev/condiments@latest
-condiments --host codex-cli --target .
-```
-
-### Install the prompt-only skill
-
-Install globally for Codex from this GitHub repository:
+Install only the portable Codex prompt instructions, without native hooks, runtime helpers, or host configuration:
 
 ```bash
 npx --yes skills add DotsIsDev/condiments --skill condiments -a codex -g
 ```
 
-Change the agent for another environment:
+For Claude Code, Cursor, or OpenClaw, replace `codex` with `claude-code`, `cursor`, or `openclaw`.
+
+Install the Condiments command globally if you prefer it over `npx`:
 
 ```bash
-npx --yes skills add DotsIsDev/condiments --skill condiments -a claude-code -g
-npx --yes skills add DotsIsDev/condiments --skill condiments -a cursor -g
-npx --yes skills add DotsIsDev/condiments --skill condiments -a openclaw -g
+npm install --global @dotsisdev/condiments@latest
+condiments --host codex-cli --target .
 ```
-
-This route installs the portable prompt instructions only. It does not install native hooks, runtime helpers, or host configuration.
 
 ### Develop from source
 
