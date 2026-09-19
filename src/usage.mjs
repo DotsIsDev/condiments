@@ -1,4 +1,4 @@
-const PROVIDERS = new Set(["openai", "anthropic", "openclaw", "cursor", "canonical"]);
+const PROVIDERS = new Set(["openai", "anthropic", "deepseek", "openclaw", "cursor", "canonical"]);
 
 export function normalizeUsage(provider, payload, metadata = {}) {
   const kind = String(provider || "").toLowerCase();
@@ -18,7 +18,7 @@ export function normalizeUsage(provider, payload, metadata = {}) {
   let cacheWrite5mTokens = 0;
   let cacheWrite1hTokens = 0;
 
-  if (kind === "openai") {
+  if (kind === "openai" || kind === "deepseek") {
     inputTokens = count(first(source.input_tokens, source.prompt_tokens));
     outputTokens = count(first(source.output_tokens, source.completion_tokens));
     cacheReadTokens = count(first(

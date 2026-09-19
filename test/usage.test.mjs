@@ -24,6 +24,20 @@ test("normalizes OpenAI Responses usage without double-counting subsets", () => 
   assert.equal(run.cache_hit_ratio, 0.6);
 });
 
+test("normalizes DeepSeek OpenAI-compatible usage and reasoning tokens", () => {
+  const run = normalizeUsage("deepseek", { usage: {
+    prompt_tokens: 900,
+    completion_tokens: 180,
+    prompt_tokens_details: { cached_tokens: 600 },
+    completion_tokens_details: { reasoning_tokens: 120 },
+  }});
+  assert.equal(run.input_tokens, 900);
+  assert.equal(run.cache_read_tokens, 600);
+  assert.equal(run.uncached_input_tokens, 300);
+  assert.equal(run.output_tokens, 180);
+  assert.equal(run.reasoning_tokens, 120);
+});
+
 test("normalizes Anthropic cache buckets into total logical input", () => {
   const run = normalizeUsage("anthropic", { usage: {
     input_tokens: 50,

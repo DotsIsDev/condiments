@@ -124,8 +124,9 @@ Condiments targets host capabilities rather than a fixed model allowlist.
 | Claude Code | Claude models available to Claude Code | `/cond`, `/condiments` | Tool-result replacement, checkpoint restore, cache telemetry |
 | Cursor | Models available to Cursor Agent | `/cond`, `/condiments` | MCP result replacement, compaction, exposed cache fields |
 | OpenClaw | Models configured in OpenClaw | `/cond`, `/condiments` | Tokenjuice interception, `maxTokens`, pruning, compaction, cache retention |
-| Direct APIs | OpenAI Responses and Anthropic Messages | Library/CLI helpers | Native output caps, tool-call budgets, cache controls and telemetry when exposed |
+| Direct APIs | OpenAI Responses and Anthropic Messages | Library/CLI helpers | Adaptive reasoning effort, native output caps, response-state reuse, Claude context editing, cache controls and telemetry |
 | Qwen endpoints | Declared hybrid-thinking models | Request decorator | Capability-gated thinking toggle and budget |
+| DeepSeek endpoints | Declared V4.1 reasoning surfaces | Request decorator | Adaptive effort, native output caps, and safe reasoning-history elision |
 
 Prompt-level controls remain portable when a host does not expose a native switch. Run `/cond status` to see what the current installation can actually control. Missing telemetry is reported as unavailable, never as zero.
 
@@ -228,6 +229,7 @@ Full reviews:
 - [TokenSkip](https://aclanthology.org/2025.emnlp-main.165/)
 - [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388)
 - [Qwen3 thinking-budget implementation](https://github.com/QwenLM/Qwen3/blob/main/docs/source/getting_started/thinking_budget.md)
+- [DeepSeek-V4.1-Flash report](research/DeepSeek_V41_Tech_Report.md)
 
 </details>
 
@@ -248,6 +250,8 @@ Full reviews:
 - [Cursor model router](https://prod.cursor.com/docs/cursor-router)
 - [Cursor agent-harness improvements](https://cursor.com/blog/continually-improving-agent-harness)
 - [DeepSeek context cache](https://api-docs.deepseek.com/zh-cn/guides/kv_cache/)
+- [DeepSeek thinking mode and reasoning effort](https://api-docs.deepseek.com/guides/thinking_mode/)
+- [DeepSeek Responses API](https://api-docs.deepseek.com/api/create-response/)
 - [DeepSeek FIM completion](https://api-docs.deepseek.com/zh-cn/api/create-completion/)
 - [Alibaba Model Studio context cache](https://help.aliyun.com/zh/model-studio/context-cache)
 - [Alibaba Qwen deep thinking](https://help.aliyun.com/zh/model-studio/deep-thinking)

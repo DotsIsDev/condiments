@@ -135,7 +135,11 @@ function componentValues(provider, request, options) {
     tools: request.tools ?? null,
     system: provider === "anthropic" ? request.system ?? null : request.instructions ?? null,
     cache: provider === "anthropic"
-      ? request.cache_control ?? null
+      ? {
+          control: request.cache_control ?? null,
+          context_management: request.context_management ?? null,
+          betas: request.betas ?? null,
+        }
       : { key: request.prompt_cache_key ?? null, options: request.prompt_cache_options ?? null },
   };
   if (provider === "anthropic") {
@@ -159,7 +163,9 @@ function restoreComponent(provider, field, source, target) {
   if (field === "tools") return copyKey(source, target, "tools");
   if (field === "system") return copyKey(source, target, provider === "anthropic" ? "system" : "instructions");
   if (field === "cache") {
-    for (const key of provider === "anthropic" ? ["cache_control"] : ["prompt_cache_key", "prompt_cache_options"]) copyKey(source, target, key);
+    for (const key of provider === "anthropic"
+      ? ["cache_control", "context_management", "betas"]
+      : ["prompt_cache_key", "prompt_cache_options"]) copyKey(source, target, key);
     return;
   }
   if (field === "reasoning") {

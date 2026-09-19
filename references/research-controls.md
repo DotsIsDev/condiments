@@ -27,3 +27,19 @@ The query compressor weights errors, tests, code, configuration, dependencies, e
 `condiments-qwen-thinking --input request.json` decorates declared Qwen request surfaces. It never infers support from a model name. Callers must declare `hybridThinking`; `thinkingBudget` is separate. `full` disables thinking for routine work, uses 2,048 tokens for complex work, and raises to 4,096 only for a quality-required or blocked attempt. Existing lower budgets remain lower. `none` leaves the request unchanged.
 
 Provider fields are written to `extra_body` for OpenAI-compatible Qwen endpoints or to the request root for a declared native surface. Interactive host-native Qwen control remains unavailable unless that host exposes the request surface.
+
+## DeepSeek reasoning and history (`hot`)
+
+`condiments-deepseek-reasoning --input request.json` decorates explicitly declared DeepSeek V4.1 request surfaces. Callers must declare `reasoningEffort` and, separately, `reasoningHistoryElision` capabilities. `none` is inert.
+
+For `full`, micro work disables thinking, standard work uses `low`, complex work uses `high`, and quality-required or blocked work uses `max`. `some` keeps thinking enabled and uses `low` for micro work, `high` otherwise, and `max` for quality escalation. Existing lower caller effort remains lower unless the caller explicitly marks a quality escalation.
+
+For Chat Completions without tools, the decorator removes prior assistant `reasoning_content` before the latest user turn and reports the estimated input-token reduction. It never removes that history when `tools` is present because DeepSeek requires the full reasoning chain for tool-call continuation. Responses requests use `reasoning.effort`; Chat Completions uses `thinking.type` plus `reasoning_effort`.
+
+This is request-level control for direct DeepSeek calls. A coding host controls it natively only when the host exposes those provider fields.
+
+## Shared provider reasoning (`hot`)
+
+`condiments-reasoning --provider <provider> --input request.json` applies the same task classification and quality escalation policy across OpenAI Responses, Anthropic Messages, Qwen, and DeepSeek. OpenAI receives request-level `reasoning.effort` and optional `previous_response_id`; the governor never generates Codex `configuration_update` items. Anthropic receives `output_config.effort` and, when explicitly supported, server-side thinking cleanup that remains disabled during active tool-result continuation.
+
+When callers provide a previous request and measured cache-lineage metrics, the governor retains earlier reasoning and context settings unless the projected savings clear the cache break-even threshold or quality requires escalation. See [reasoning-governor.md](reasoning-governor.md).

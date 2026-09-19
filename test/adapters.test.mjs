@@ -39,7 +39,9 @@ for (const host of ADAPTER_ORDER) {
       await access(path.join(destinations.main, "scripts", "reversible-memory.mjs"));
       await access(path.join(destinations.main, "scripts", "significance-output.mjs"));
       await access(path.join(destinations.main, "scripts", "llmlingua-sidecar.mjs"));
+      await access(path.join(destinations.main, "scripts", "reasoning-governor.mjs"));
       await access(path.join(destinations.main, "scripts", "qwen-thinking.mjs"));
+      await access(path.join(destinations.main, "scripts", "deepseek-reasoning.mjs"));
       await access(path.join(destinations.main, "sidecars", "llmlingua2.py"));
       await access(path.join(destinations.main, "references", "completion-policy.md"));
       await access(path.join(destinations.main, "references", "tool-context.md"));
@@ -49,6 +51,7 @@ for (const host of ADAPTER_ORDER) {
       await access(path.join(destinations.main, "references", "log-dictionary.md"));
       await access(path.join(destinations.main, "references", "output-cap-learning.md"));
       await access(path.join(destinations.main, "references", "research-controls.md"));
+      await access(path.join(destinations.main, "references", "reasoning-governor.md"));
       await access(path.join(destinations.main, "capabilities.json"));
       await access(path.join(destinations.alias, "SKILL.md"));
       assert.match(await readFile(path.join(destinations.alias, "SKILL.md"), "utf8"), /name: cond/);
@@ -82,8 +85,14 @@ for (const host of ADAPTER_ORDER) {
       assert.equal(installedCapabilities.queryConditionedContextAllocation, true);
       assert.equal(installedCapabilities.learnedContextCompressionAdapter, true);
       assert.equal(installedCapabilities.nativeLearnedContextCompression, false);
+      assert.equal(installedCapabilities.providerReasoningGovernor, true);
+      assert.equal(installedCapabilities.openaiReasoningRequestControl, true);
+      assert.equal(installedCapabilities.anthropicReasoningRequestControl, true);
       assert.equal(installedCapabilities.qwenThinkingRequestControl, true);
       assert.equal(installedCapabilities.nativeQwenThinkingControl, false);
+      assert.equal(installedCapabilities.deepseekReasoningRequestControl, true);
+      assert.equal(installedCapabilities.deepseekReasoningHistoryPruning, true);
+      assert.equal(installedCapabilities.nativeDeepSeekReasoningControl, false);
       assert.equal(installedCapabilities.nativeCacheLineageControl, host === "codex-cli" && Boolean(receipt.nativeReasoning.activeTurnRouting));
       assert.equal(receipt.nativeToolContext.supported, host === "openclaw");
 

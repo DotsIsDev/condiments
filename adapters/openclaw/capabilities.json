@@ -35,5 +35,11 @@
   "learnedContextCompressionAdapter": true,
   "nativeLearnedContextCompression": false,
   "qwenThinkingRequestControl": true,
-  "nativeQwenThinkingControl": false
+  "nativeQwenThinkingControl": false,
+  "deepseekReasoningRequestControl": true,
+  "deepseekReasoningHistoryPruning": true,
+  "nativeDeepSeekReasoningControl": false,
+  "providerReasoningGovernor": true,
+  "openaiReasoningRequestControl": true,
+  "anthropicReasoningRequestControl": true
 }

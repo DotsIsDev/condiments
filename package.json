@@ -1,6 +1,6 @@
 {
   "name": "@dotsisdev/condiments",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Portable token-efficiency controls for Codex CLI, Claude Code, Cursor, and OpenClaw.",
   "author": "DotsIsDev",
   "license": "MIT",
@@ -72,7 +72,9 @@
     "condiments-memory": "scripts/reversible-memory.mjs",
     "condiments-significance-output": "scripts/significance-output.mjs",
     "condiments-llmlingua": "scripts/llmlingua-sidecar.mjs",
-    "condiments-qwen-thinking": "scripts/qwen-thinking.mjs"
+    "condiments-reasoning": "scripts/reasoning-governor.mjs",
+    "condiments-qwen-thinking": "scripts/qwen-thinking.mjs",
+    "condiments-deepseek-reasoning": "scripts/deepseek-reasoning.mjs"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",

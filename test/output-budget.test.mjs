@@ -28,6 +28,14 @@ test("decorates supported provider requests with native output-token limits", ()
   const openclaw = decorateProviderOutputRequest("openclaw", {}, { level: "full" });
   assert.equal(openclaw.request.maxTokens, 2_048);
   assert.equal(openclaw.control.mechanism, "maxTokens");
+
+  const deepseekChat = decorateProviderOutputRequest("deepseek", { max_tokens: 1_000 }, { level: "full", api: "chat-completions" });
+  assert.equal(deepseekChat.request.max_tokens, 1_000);
+  assert.equal(deepseekChat.control.mechanism, "max_tokens");
+
+  const deepseekResponses = decorateProviderOutputRequest("deepseek", {}, { level: "full", api: "responses" });
+  assert.equal(deepseekResponses.request.max_output_tokens, 2_048);
+  assert.equal(deepseekResponses.control.mechanism, "max_output_tokens");
 });
 
 test("never raises an existing lower limit and none leaves requests unchanged", () => {
@@ -52,6 +60,9 @@ test("detects OpenAI and Anthropic cap hits and fails lost-result quality", () =
   }), { hit: true, reason: "max_output_tokens" });
   assert.deepEqual(detectOutputCapHit("anthropic", { stop_reason: "max_tokens" }), {
     hit: true, reason: "max_tokens",
+  });
+  assert.deepEqual(detectOutputCapHit("deepseek", { choices: [{ finish_reason: "length" }] }), {
+    hit: true, reason: "length",
   });
   const record = createOutputCapTelemetryRecord("openai", {
     max_output_tokens: 2_048,

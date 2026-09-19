@@ -84,7 +84,9 @@ async function copyRuntimeBundle(destination) {
     "src/significance-output.mjs",
     "src/hierarchical-budget.mjs",
     "src/llmlingua-sidecar.mjs",
+    "src/reasoning-governor.mjs",
     "src/native-qwen.mjs",
+    "src/native-deepseek.mjs",
     "scripts/condiments.mjs",
     "scripts/compact-tool-result.mjs",
     "scripts/output-budget.mjs",
@@ -107,7 +109,9 @@ async function copyRuntimeBundle(destination) {
     "scripts/reversible-memory.mjs",
     "scripts/significance-output.mjs",
     "scripts/llmlingua-sidecar.mjs",
+    "scripts/reasoning-governor.mjs",
     "scripts/qwen-thinking.mjs",
+    "scripts/deepseek-reasoning.mjs",
     "sidecars/llmlingua2.py",
     "references/policy.md",
     "references/policy-protocol.md",
@@ -126,6 +130,7 @@ async function copyRuntimeBundle(destination) {
     "references/log-dictionary.md",
     "references/output-cap-learning.md",
     "references/research-controls.md",
+    "references/reasoning-governor.md",
   ];
   for (const relativePath of files) {
     const destinationPath = path.join(destination, relativePath);
@@ -162,7 +167,9 @@ async function copyRuntimeBundle(destination) {
       "condiments-memory": "scripts/reversible-memory.mjs",
       "condiments-significance-output": "scripts/significance-output.mjs",
       "condiments-llmlingua": "scripts/llmlingua-sidecar.mjs",
+      "condiments-reasoning": "scripts/reasoning-governor.mjs",
       "condiments-qwen-thinking": "scripts/qwen-thinking.mjs",
+      "condiments-deepseek-reasoning": "scripts/deepseek-reasoning.mjs",
     },
   };
   await writeFile(path.join(destination, "package.json"), `${JSON.stringify(runtimePackage, null, 2)}\n`, "utf8");

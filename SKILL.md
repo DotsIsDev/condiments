@@ -70,6 +70,10 @@ On Codex CLI, `hot some|full` sets a routed project default for the next session
 
 For direct Qwen endpoints that explicitly declare hybrid-thinking support, use `scripts/qwen-thinking.mjs`. Under `full`, disable thinking for routine work and cap complex thinking; escalate only for missing quality or blocked work. Do not infer capability from a model name. See [references/research-controls.md](references/research-controls.md).
 
+For direct DeepSeek V4.1 requests with explicitly declared reasoning-effort support, use `scripts/deepseek-reasoning.mjs`. Reserve `max` for quality escalation, use lower effort for ordinary work, and preserve any lower caller setting. Without tools, remove prior assistant `reasoning_content`; with tools, retain it because DeepSeek requires it for continuation. See [references/research-controls.md](references/research-controls.md).
+
+For direct OpenAI Responses, Anthropic Messages, Qwen, or DeepSeek requests, use `scripts/reasoning-governor.mjs` with explicit capabilities. Preserve lower caller effort, active Claude tool-loop thinking, and valuable cache lineage; escalate only for blocked or quality-required work. Never emit a `configuration_update` item. See [references/reasoning-governor.md](references/reasoning-governor.md).
+
 Normalize provider usage with `scripts/report-usage.mjs`. Keep logical input, uncached input, cache reads, cache writes, reasoning, output, cost, and verified success separate. Never add cache subsets twice when reporting total logical tokens. Never report an omitted cache counter as a measured zero.
 
 For `/cond status`, report the preset, five effective control levels, host, and capability flags. Do not claim a native capability unless an adapter reports it.

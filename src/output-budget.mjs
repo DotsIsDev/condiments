@@ -10,7 +10,7 @@ export const PROVIDER_OUTPUT_TOKEN_LIMITS = Object.freeze({
   full: 2_048,
 });
 
-const PROVIDERS = new Set(["openai", "anthropic", "openclaw", "cursor"]);
+const PROVIDERS = new Set(["openai", "anthropic", "deepseek", "openclaw", "cursor"]);
 const HOSTS = new Set(["openclaw", "claude-code", "codex-cli", "cursor"]);
 const LEVELS = new Set(["none", "some", "full"]);
 
@@ -95,6 +95,24 @@ export function decorateProviderOutputRequest(provider, request, options = {}) {
     };
   }
 
+  if (kind === "deepseek") {
+    const api = String(options.api ?? "chat-completions").toLowerCase();
+    const key = api === "responses" ? "max_output_tokens" : api === "chat-completions" ? "max_tokens" : null;
+    if (!key) return { request: output, control: { ...control, reason: `DeepSeek API '${api}' is unsupported` } };
+    const effective = lowerLimit(output[key], requestedLimit);
+    output[key] = effective;
+    return {
+      request: output,
+      control: {
+        ...control,
+        applied: true,
+        mechanism: key,
+        effective_limit: effective,
+        tool_mechanism: governor ? "prompt-contract" : null,
+      },
+    };
+  }
+
   if (kind === "openclaw") {
     const effective = lowerLimit(output.maxTokens, requestedLimit);
     output.maxTokens = effective;
@@ -128,6 +146,14 @@ export function detectOutputCapHit(provider, payload) {
       value?.stop_reason === "max_tokens" || value?.stopReason === "max_tokens"
     );
     return { hit: Boolean(match), reason: match ? "max_tokens" : null };
+  }
+  if (kind === "deepseek") {
+    const responseLimit = candidates.find((value) =>
+      value?.incomplete_details?.reason === "max_output_tokens" || value?.incompleteDetails?.reason === "max_output_tokens"
+    );
+    if (responseLimit) return { hit: true, reason: "max_output_tokens" };
+    const chatLimit = candidates.find((value) => value?.finish_reason === "length" || value?.finishReason === "length");
+    return { hit: Boolean(chatLimit), reason: chatLimit ? "length" : null };
   }
   if (kind === "openclaw") {
     const match = candidates.find((value) =>
@@ -272,13 +298,19 @@ function lowerLimit(current, requested) {
 function requestedLimit(provider, payload, explicit) {
   if (Number.isInteger(explicit) && explicit > 0) return explicit;
   const candidates = collectObjects(payload);
-  const key = provider === "openai" ? "max_output_tokens" : provider === "anthropic" ? "max_tokens" : "maxTokens";
-  const found = candidates.map((value) => value?.[key]).find((value) => Number.isInteger(value) && value > 0);
+  const keys = provider === "openai"
+    ? ["max_output_tokens"]
+    : provider === "anthropic"
+      ? ["max_tokens"]
+      : provider === "deepseek"
+        ? ["max_output_tokens", "max_tokens"]
+        : ["maxTokens"];
+  const found = candidates.flatMap((value) => keys.map((key) => value?.[key])).find((value) => Number.isInteger(value) && value > 0);
   return found ?? null;
 }
 
 function actualOutputTokens(provider, payload, explicit) {
-  const keys = provider === "openai"
+  const keys = provider === "openai" || provider === "deepseek"
     ? ["output_tokens", "completion_tokens"]
     : provider === "anthropic"
       ? ["output_tokens"]

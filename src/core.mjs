@@ -71,6 +71,9 @@ export const CAPABILITY_KEYS = Object.freeze([
   "nativeLearnedContextCompression",
   "qwenThinkingRequestControl",
   "nativeQwenThinkingControl",
+  "deepseekReasoningRequestControl",
+  "deepseekReasoningHistoryPruning",
+  "nativeDeepSeekReasoningControl",
 ]);
 
 export const DEFAULT_CAPABILITIES = Object.freeze({
@@ -111,6 +114,9 @@ export const DEFAULT_CAPABILITIES = Object.freeze({
   nativeLearnedContextCompression: false,
   qwenThinkingRequestControl: true,
   nativeQwenThinkingControl: false,
+  deepseekReasoningRequestControl: true,
+  deepseekReasoningHistoryPruning: true,
+  nativeDeepSeekReasoningControl: false,
 });
 
 const PROMPT_POLICY = Object.freeze({
@@ -403,6 +409,6 @@ export function formatStatus(candidateState, options = {}) {
     `Query compressor: verification-aware=${flag(capabilities.verificationAwareQueryCompression)}`,
     `Log compressor: lossless-dictionary=${flag(capabilities.losslessLogDictionary)}`,
     `Research controls: reversible-memory=${flag(capabilities.reversibleMemory)} significant-output=${flag(capabilities.significanceAwareOutput)} phase-budget=${flag(capabilities.hierarchicalBudgetControl)} query-allocation=${flag(capabilities.queryConditionedContextAllocation)}`,
-    `Optional providers: learned-compressor=${flag(capabilities.learnedContextCompressionAdapter)} learned-native=${flag(capabilities.nativeLearnedContextCompression)} qwen-request=${flag(capabilities.qwenThinkingRequestControl)} qwen-native=${flag(capabilities.nativeQwenThinkingControl)}`,
+    `Optional providers: learned-compressor=${flag(capabilities.learnedContextCompressionAdapter)} learned-native=${flag(capabilities.nativeLearnedContextCompression)} qwen-request=${flag(capabilities.qwenThinkingRequestControl)} qwen-native=${flag(capabilities.nativeQwenThinkingControl)} deepseek-request=${flag(capabilities.deepseekReasoningRequestControl)} deepseek-history=${flag(capabilities.deepseekReasoningHistoryPruning)} deepseek-native=${flag(capabilities.nativeDeepSeekReasoningControl)}`,
   ].join("\n");
 }

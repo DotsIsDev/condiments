@@ -19,7 +19,16 @@ if (packageJson.bin?.[executableName] !== "scripts/install-adapter.mjs") {
   errors.push("package-name npx entry must run installer");
 }
 
-for (const required of ["README.md", "LICENSE", "SKILL.md", "scripts/install-adapter.mjs", "adapters/codex-cli/condiments.SKILL.md"]) {
+for (const required of [
+  "README.md",
+  "LICENSE",
+  "SKILL.md",
+  "scripts/install-adapter.mjs",
+  "scripts/reasoning-governor.mjs",
+  "src/reasoning-governor.mjs",
+  "references/reasoning-governor.md",
+  "adapters/codex-cli/condiments.SKILL.md",
+]) {
   try { await access(path.join(root, required)); } catch { errors.push(`missing ${required}`); }
 }
 
