@@ -21,10 +21,10 @@ The router only selects a model returned by Codex `model/list`. If preferred mod
 ```toml
 [features]
 step_model_switching = true
-reasoning_effort_override = true
+reasoning_effort_override = false
 ```
 
-The next direct Codex CLI session loads a routed `model` and `model_reasoning_effort` project default plus these features. `none` restores all four exact pre-Condiments values captured in `.condiments/native-reasoning/codex-baseline.json`.
+The next direct Codex CLI session loads a routed `model` and `model_reasoning_effort` project default. Condiments keeps `reasoning_effort_override` disabled because Codex represents that experimental feature as a `configuration_update` input item, which some advertised models reject. Managed sessions use `turn/settings/update`; explicit routed executions use command-line settings. `none` restores all four exact pre-Condiments values captured in `.condiments/native-reasoning/codex-baseline.json`.
 
 At adapter installation, Condiments probes `codex app-server proxy` once. It does not start a daemon. Only a successful probe installs the active-turn hook and sets `active-turn-route=yes`. A failed probe removes any stale Condiments routing hook while preserving unrelated hooks.
 
@@ -58,7 +58,7 @@ The wrapper uses Codex's native `--model` and `-c model_reasoning_effort=...` ar
 
 ## Cache behavior
 
-Changing models starts another prompt-cache lineage. `some` therefore keeps the current model for standard coding work. The `reasoning_effort_override` feature lets supported Codex/OpenAI paths append a reasoning configuration update rather than rewriting the stable prompt prefix. Cache telemetry must still verify actual reuse.
+Changing models starts another prompt-cache lineage. `some` therefore keeps the current model for standard coding work. Condiments does not append reasoning configuration updates to interactive history; managed turn settings and explicit executions change effort outside model input. Cache telemetry must still verify actual reuse.
 
 The cache-lineage controller now checks latest same-session provider cache telemetry before active-turn routing. Below break-even, it retains the current model and reasoning effort. Escalation work always bypasses that hold. When no managed socket exists, `scripts/codex-route.mjs` uses the latest compatible project telemetry for the same check during explicit routed execution. See [cache-lineage.md](cache-lineage.md).
 

@@ -72,7 +72,7 @@ test("Codex installation and policy toggle native features with baseline restora
     await applyNativeReasoningPolicy("codex-cli", root, "full");
     let config = await readFile(configPath, "utf8");
     assert.match(config, /step_model_switching = true/);
-    assert.match(config, /reasoning_effort_override = true/);
+    assert.match(config, /reasoning_effort_override = false/);
     assert.match(config, /model_reasoning_effort = "low"/);
     assert.match(config, /other = true/);
 

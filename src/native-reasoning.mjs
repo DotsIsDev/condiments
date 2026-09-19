@@ -144,7 +144,7 @@ export async function installNativeReasoningHooks(host, targetRoot, options = {}
     activeTurnRouting: activeTurn.available,
     event: activeTurn.available ? "UserPromptSubmit" : null,
     probe: activeTurn,
-    nativeFeatures: ["step_model_switching", "reasoning_effort_override"],
+    nativeFeatures: ["step_model_switching"],
   };
 }
 
@@ -190,7 +190,11 @@ export async function applyNativeReasoningPolicy(host, targetRoot, level) {
       };
     } else {
       await upsertTomlKey(configPath, "features", "step_model_switching", "true");
-      await upsertTomlKey(configPath, "features", "reasoning_effort_override", "true");
+      // Codex serializes reasoning overrides as `configuration_update` input
+      // items. Several advertised models reject that item type, so keep the
+      // experimental override disabled and route effort through project
+      // defaults or the managed turn-settings API instead.
+      await upsertTomlKey(configPath, "features", "reasoning_effort_override", "false");
       let catalog = [];
       let discoveryError = null;
       try {
@@ -214,7 +218,7 @@ export async function applyNativeReasoningPolicy(host, targetRoot, level) {
         mode: "project default plus managed app-server turn routing",
         configPath,
         appliesOn: "project default on next Codex session; active turn only when managed app-server proxy is available",
-        features: { step_model_switching: true, reasoning_effort_override: true },
+        features: { step_model_switching: true, reasoning_effort_override: false },
         defaultRoute,
         catalogModels: catalog.length,
         discoveryError,
