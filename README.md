@@ -227,6 +227,7 @@ Full reviews:
 
 - [Latest algorithmic token-reduction research](research/LATEST_TOKEN_REDUCTION_RESEARCH.md)
 - [Chinese token-efficiency research](research/CHINESE_TOKEN_EFFICIENCY_RESEARCH.md)
+- [DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression](research/DeepSeek_V41_Tech_Report.md)
 
 <details>
 <summary><strong>Core algorithmic papers</strong></summary>
