@@ -3,6 +3,7 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import {
   applyCommand,
   createDefaultState,
@@ -24,13 +25,24 @@ import { applyNativeToolContextPolicy } from "../src/tool-context.mjs";
 
 async function main() {
   const options = parseOptions(process.argv.slice(2));
+  const command = parseCommand(options.commandTokens);
+
+  if (command.type === "version") {
+    const version = await readInstalledVersion();
+    if (options.json) {
+      process.stdout.write(`${JSON.stringify({ command, version }, null, 2)}\n`);
+    } else {
+      process.stdout.write(`Condiments v${version}\n`);
+    }
+    return;
+  }
+
   const statePath = path.resolve(
     options.statePath ||
       process.env.CONDIMENTS_STATE_PATH ||
       path.join(process.cwd(), ".condiments", "state.json"),
   );
   const currentState = await loadState(statePath);
-  const command = parseCommand(options.commandTokens);
   const nextState = applyCommand(currentState, command);
 
   if (command.type !== "status" && !options.noWrite) {
@@ -213,6 +225,16 @@ async function main() {
     if (policyPrefix) process.stdout.write(`\n${policyPrefix}\n`);
     if (prompt) process.stdout.write(`\n${prompt}\n`);
   }
+}
+
+async function readInstalledVersion() {
+  const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
+  const packagePath = path.resolve(scriptDirectory, "..", "package.json");
+  const packageMetadata = JSON.parse(await readFile(packagePath, "utf8"));
+  if (typeof packageMetadata.version !== "string" || packageMetadata.version.trim() === "") {
+    throw new Error(`Cannot read installed version from '${packagePath}'.`);
+  }
+  return packageMetadata.version;
 }
 
 function parseOptions(args) {

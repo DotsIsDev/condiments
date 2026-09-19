@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -44,6 +44,14 @@ test("normalizes condiment aliases and makes a bare control full", () => {
       level: "full",
     });
   }
+});
+
+test("parses version aliases through both command names", () => {
+  for (const alias of ["v", "ver", "version"]) {
+    assert.deepEqual(parseCommand(`/cond ${alias}`), { type: "version" });
+    assert.deepEqual(parseCommand(`/CONDIMENTS ${alias.toUpperCase()}`), { type: "version" });
+  }
+  assert.throws(() => parseCommand("/cond version extra"), /Too many arguments/);
 });
 
 test("rejects unknown controls and levels", () => {
@@ -199,6 +207,38 @@ test("CLI persists state and returns a machine-readable prompt", async () => {
       preset: "some",
       overrides: { mayo: "none" },
     });
+  } finally {
+    await rm(temporaryDirectory, { recursive: true, force: true });
+  }
+});
+
+test("CLI reports its bundled version without reading or changing policy state", async () => {
+  const temporaryDirectory = await mkdtemp(path.join(os.tmpdir(), "condiments-version-"));
+  const statePath = path.join(temporaryDirectory, "state.json");
+  const scriptPath = path.resolve("scripts", "condiments.mjs");
+  const packageMetadata = JSON.parse(await readFile(path.resolve("package.json"), "utf8"));
+
+  try {
+    await writeFile(statePath, "not valid json\n", "utf8");
+    const human = spawnSync(
+      process.execPath,
+      [scriptPath, "/cond", "version", "--state", statePath],
+      { cwd: temporaryDirectory, encoding: "utf8" },
+    );
+    assert.equal(human.status, 0, human.stderr);
+    assert.equal(human.stdout, `Condiments v${packageMetadata.version}\n`);
+
+    const machine = spawnSync(
+      process.execPath,
+      [scriptPath, "/condiments", "ver", "--state", statePath, "--json"],
+      { cwd: temporaryDirectory, encoding: "utf8" },
+    );
+    assert.equal(machine.status, 0, machine.stderr);
+    assert.deepEqual(JSON.parse(machine.stdout), {
+      command: { type: "version" },
+      version: packageMetadata.version,
+    });
+    assert.equal(await readFile(statePath, "utf8"), "not valid json\n");
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true });
   }

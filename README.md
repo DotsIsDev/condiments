@@ -186,6 +186,7 @@ Read the evidence:
 | --- | --- |
 | `/cond` or `/condiments` | Show current state when used without arguments |
 | `/cond status` | Show preset, five effective levels, host, and capability flags |
+| `/cond v`, `/cond ver`, or `/cond version` | Show the installed Condiments release; `/condiments` accepts the same aliases |
 | `/cond none` | Turn off all Condiments controls and restore supported host settings |
 | `/cond some` | Apply balanced, quality-first savings to all five controls |
 | `/cond full` | Apply the strongest verified policy to all five controls |

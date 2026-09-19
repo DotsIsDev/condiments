@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Condiments for OpenClaw
 
-Treat the command arguments as `/condiments <arguments>`. On first use this session, read `references/policy.md` and `references/policy-protocol.md` once. For mode changes, run `{baseDir}/scripts/condiments.mjs` with the reconstructed command, `--host openclaw`, `--capabilities {baseDir}/capabilities.json`, and `--prompt-only`; apply the compact delta. For status, omit `--prompt-only`. Never inject repeated status, capabilities, or receipts.
+Treat the command arguments as `/condiments <arguments>`. Command-only turns use a fast path: run `{baseDir}/scripts/condiments.mjs` immediately with the reconstructed command, `--host openclaw`, `--capabilities {baseDir}/capabilities.json`, and `--prompt-only`; apply the compact delta and stop after success. For status or `v|ver|version`, omit `--prompt-only` and show the human result. Do not read reference files for these commands. Before the first substantive task with an active policy, read `references/policy.md` and `references/policy-protocol.md` once. Version commands never change policy state. Never inject repeated status, capabilities, or receipts.
 
 Keep state in the workspace `.condiments/state.json`. `ranch some|full` activates OpenClaw's Tokenjuice result middleware for automatic `exec` and `bash` compaction; `none` restores the captured plugin state. Missing CLI, installation, or capability consent remains pending in `.condiments/native-output/last-apply.json`.
 

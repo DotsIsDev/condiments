@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-09-19
+
+### Added
+
+- Added `/cond v`, `/cond ver`, and `/cond version` aliases, including `/condiments` forms, for reporting the installed release from the bundled package metadata.
+- Added machine-readable version output through `--json`.
+
+### Changed
+
+- Added a command-only fast path for all adapters. Enabling, disabling, resetting, checking status, and reporting version now skip sibling-skill and policy-reference reads.
+
+### Fixed
+
+- Version checks no longer read, create, or change Condiments policy state.
+- Removed unnecessary policy-loading work from simple control commands, reducing enable and disable latency while preserving native policy application.
+
 ## [0.1.3] - 2026-09-18
 
 ### Changed
@@ -40,7 +56,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Adapters for Codex CLI, Claude Code, Cursor, and OpenClaw.
 - Context compression, checkpoints, large-output handling, prompt-cache telemetry, model routing, patch-first completion, and evaluation tooling.
 
-[Unreleased]: https://github.com/DotsIsDev/condiments/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/DotsIsDev/condiments/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/DotsIsDev/condiments/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/DotsIsDev/condiments/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/DotsIsDev/condiments/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/DotsIsDev/condiments/compare/v0.1.0...v0.1.1

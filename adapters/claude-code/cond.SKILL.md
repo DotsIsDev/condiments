@@ -4,5 +4,4 @@ description: Short alias for the Condiments token-efficiency command.
 disable-model-invocation: true
 ---
 
-Read `../condiments/SKILL.md` and follow it. Treat `$ARGUMENTS` as `/cond $ARGUMENTS` and use the sibling `condiments` bundle for scripts, references, capabilities, and state handling.
-
+Treat `$ARGUMENTS` as `/cond $ARGUMENTS`. For a command-only turn, do not read the sibling skill or references. Run `../condiments/scripts/condiments.mjs` immediately with `--host claude-code`, sibling `capabilities.json`, and `--prompt-only`; apply its compact delta and stop after success. Omit `--prompt-only` for status or `v|ver|version`. Before substantive work with an active policy, read `../condiments/SKILL.md` and follow it.

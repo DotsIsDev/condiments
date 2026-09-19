@@ -17,6 +17,8 @@ Accept these commands case-insensitively:
 /cond <control> [none|some|full]
 /condiments <control> [none|some|full]
 /cond status
+/cond <v|ver|version>
+/condiments <v|ver|version>
 /cond reset
 ```
 
@@ -28,11 +30,11 @@ Aliases:
 - `ran`, `ranch`
 - `hot`, `hotsauce`
 
-A bare control selects `full`. A bare `/cond` or `/condiments` shows status. A global preset clears individual overrides. Later commands take precedence.
+A bare control selects `full`. A bare `/cond` or `/condiments` shows status. `v`, `ver`, and `version` report the installed release without reading or changing policy state. A global preset clears individual overrides. Later commands take precedence.
 
-Use `scripts/condiments.mjs` for deterministic parsing and state resolution when local execution is available. For mode changes, use `--prompt-only` so status, capabilities, and native receipts do not enter model context. Use normal output for `/cond status`. Otherwise maintain equivalent state in the current session.
+Command-only turns use a fast path: run `scripts/condiments.mjs` immediately without reading any reference file. For mode changes, use `--prompt-only` so status, capabilities, and native receipts do not enter model context. Use normal output for status and version commands. Return the result without further inspection when the script succeeds. Otherwise maintain equivalent state in the current session.
 
-Read [references/policy.md](references/policy.md) on first Condiments use in a session, then apply later compact deltas without rereading it. `none` adds no Condiments behavior and does not disable mandatory host behavior.
+Before the first substantive task with an active Condiments policy, read [references/policy.md](references/policy.md) and [references/policy-protocol.md](references/policy-protocol.md) once. Do not read them merely to enable, disable, reset, inspect status, or report version. Later commands apply compact deltas without rereading them. `none` adds no Condiments behavior and does not disable mandatory host behavior.
 
 Full rules are loaded once with this skill. Later commands emit protocol-v1 state deltas only: `m/u/k/r/h` mean mayo/mustard/ketchup/ranch/hot and `n/s/f` mean none/some/full. Preserve omitted control values. `reset` makes all controls `none`; `q=verify` retains correctness. Direct provider sessions may add `--policy-prefix` on their first `--prompt-only` command, then keep that stable prefix cached. See [references/policy-protocol.md](references/policy-protocol.md).
 
@@ -77,6 +79,8 @@ For direct OpenAI Responses, Anthropic Messages, Qwen, or DeepSeek requests, use
 Normalize provider usage with `scripts/report-usage.mjs`. Keep logical input, uncached input, cache reads, cache writes, reasoning, output, cost, and verified success separate. Never add cache subsets twice when reporting total logical tokens. Never report an omitted cache counter as a measured zero.
 
 For `/cond status`, report the preset, five effective control levels, host, and capability flags. Do not claim a native capability unless an adapter reports it.
+
+For `/cond v`, `/cond ver`, or `/cond version` (and the `/condiments` forms), report the version returned by the bundled script. Do not infer it from the registry or latest release.
 
 Install a host adapter with `scripts/install-adapter.mjs --host <openclaw|claude-code|codex-cli|cursor> --target <workspace-or-repository>`. Read [references/platform-capabilities.md](references/platform-capabilities.md) for host paths, invocation syntax, and confirmed native features.
 

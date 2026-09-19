@@ -8,6 +8,7 @@ export const CONTROLS = Object.freeze([
 ]);
 
 const COMMANDS = new Set(["/cond", "/condiments"]);
+const VERSION_ALIASES = new Set(["v", "ver", "version"]);
 const LEVEL_SET = new Set(LEVELS);
 export const MAYO_FULL_MAX_WORDS = 120;
 export const POLICY_PROTOCOL_VERSION = 1;
@@ -227,6 +228,11 @@ export function parseCommand(input) {
     return { type: "status" };
   }
 
+  if (VERSION_ALIASES.has(subject)) {
+    assertArity(tokens, 2);
+    return { type: "version" };
+  }
+
   if (subject === "reset") {
     assertArity(tokens, 2);
     return { type: "reset" };
@@ -239,7 +245,7 @@ export function parseCommand(input) {
 
   const control = CONTROL_ALIASES.get(subject);
   if (!control) {
-    throw new Error(`Unknown argument '${tokens[1]}'. Use a preset, control, status, or reset.`);
+    throw new Error(`Unknown argument '${tokens[1]}'. Use a preset, control, status, version, or reset.`);
   }
 
   if (tokens.length > 3) {
@@ -263,7 +269,7 @@ function assertArity(tokens, expected) {
 export function applyCommand(currentState, command) {
   const state = normalizeState(currentState);
 
-  if (command.type === "status") {
+  if (command.type === "status" || command.type === "version") {
     return state;
   }
 

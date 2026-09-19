@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Condiments for Cursor
 
-Treat invocation arguments as `/condiments <arguments>`. Resolve this skill directory. On first use this session, read `references/policy.md` and `references/policy-protocol.md` once. For mode changes, run `scripts/condiments.mjs` with `--host cursor`, local `capabilities.json`, and `--prompt-only`; apply the compact delta. For status, omit `--prompt-only`. Never inject repeated status, capabilities, or receipts.
+Treat invocation arguments as `/condiments <arguments>` and resolve this skill directory. Command-only turns use a fast path: run `scripts/condiments.mjs` immediately with `--host cursor`, local `capabilities.json`, and `--prompt-only`; apply the compact delta and stop after success. For status or `v|ver|version`, omit `--prompt-only` and show the human result. Do not read reference files for these commands. Before the first substantive task with an active policy, read `references/policy.md` and `references/policy-protocol.md` once. Version commands never change policy state. Never inject repeated status, capabilities, or receipts.
 
 Keep state in the repository `.condiments/state.json`. The adapter registers `postToolUse` replacement for oversized MCP output under `ranch some|full`; shell output remains prompt-controlled because Cursor's shell observer cannot replace it. Exact output is hash-addressed under `.condiments/artifacts/`.
 

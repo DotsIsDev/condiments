@@ -5,7 +5,7 @@ description: Apply token-efficiency presets for $condiments and text commands /c
 
 # Condiments for Codex CLI
 
-Reconstruct the requested `/condiments` or `/cond` command from the user message. Resolve this skill directory. On first use this session, read `references/policy.md` and `references/policy-protocol.md` once. For mode changes, run `scripts/condiments.mjs` with `--host codex-cli`, local `capabilities.json`, and `--prompt-only`; apply the compact delta. For status, omit `--prompt-only` and show the human result. Never inject repeated status, capabilities, or receipts.
+Reconstruct the requested `/condiments` or `/cond` command from the user message and resolve this skill directory. Command-only turns use a fast path: run `scripts/condiments.mjs` immediately with `--host codex-cli`, local `capabilities.json`, and `--prompt-only`; apply the compact delta and stop after success. For status or `v|ver|version`, omit `--prompt-only` and show the human result. Do not read reference files for these commands. Before the first substantive task with an active policy, read `references/policy.md` and `references/policy-protocol.md` once. Version commands never change policy state. Never inject repeated status, capabilities, or receipts.
 
 Keep state in the repository `.condiments/state.json`. With `ranch some|full`, the trusted `PreToolUse:Bash` hook blocks oversized literal whole-file reads before execution and returns bounded read/search alternatives. `none` passes through. Add `condiments:allow-large-output` only when full output is explicitly required. Codex still cannot replace native `PostToolUse` output; use the bundled result-envelope helper for other large commands.
 

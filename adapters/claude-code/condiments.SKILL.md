@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Condiments for Claude Code
 
-Treat `$ARGUMENTS` as `/condiments $ARGUMENTS`. On first use this session, read `references/policy.md` and `references/policy-protocol.md` once. For mode changes, run `${CLAUDE_SKILL_DIR}/scripts/condiments.mjs` with the reconstructed command, `--host claude-code`, `--capabilities ${CLAUDE_SKILL_DIR}/capabilities.json`, and `--prompt-only`; apply the compact delta. For status, omit `--prompt-only`. Never inject repeated status, capabilities, or receipts.
+Treat `$ARGUMENTS` as `/condiments $ARGUMENTS`. Command-only turns use a fast path: run `${CLAUDE_SKILL_DIR}/scripts/condiments.mjs` immediately with the reconstructed command, `--host claude-code`, `--capabilities ${CLAUDE_SKILL_DIR}/capabilities.json`, and `--prompt-only`; apply the compact delta and stop after success. For status or `v|ver|version`, omit `--prompt-only` and show the human result. Do not read reference files for these commands. Before the first substantive task with an active policy, read `references/policy.md` and `references/policy-protocol.md` once. Version commands never change policy state. Never inject repeated status, capabilities, or receipts.
 
 Keep state in the repository `.condiments/state.json`. The native `PostToolUse` hook automatically replaces oversized compatible tool output under `ranch some|full`, preserving a recoverable hash-addressed artifact. `none` passes output through. Inspect `.condiments/native-output/last-apply.json` and `events.jsonl`.
 
