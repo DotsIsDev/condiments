@@ -1,6 +1,6 @@
 {
   "name": "@dotsisdev/condiments",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Portable token-efficiency controls for Codex CLI, Claude Code, Cursor, and OpenClaw.",
   "author": "DotsIsDev",
   "license": "MIT",

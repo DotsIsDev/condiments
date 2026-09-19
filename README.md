@@ -19,6 +19,7 @@
 <p align="center">
   <a href="#introduction">Introduction</a> ·
   <a href="#quick-start">Quick Start</a> ·
+  <a href="#latest-changes">Latest Changes</a> ·
   <a href="#compatibility">Compatibility</a> ·
   <a href="#results">Results</a> ·
   <a href="#skill">Skill</a> ·
@@ -114,6 +115,16 @@ node scripts/install-adapter.mjs --host codex-cli --target /path/to/project
 
 `none` restores captured host configuration where native control exists.
 
+## Latest Changes
+
+- **Shared reasoning governor:** direct OpenAI Responses, Anthropic Messages, Qwen, and DeepSeek requests now use one task classifier and bounded escalation policy.
+- **OpenAI:** request-level `reasoning.effort`, optional `previous_response_id` reuse, and cache-lineage protection. Condiments does not generate `configuration_update` items.
+- **Anthropic:** adaptive `output_config.effort` and server-side thinking cleanup, while preserving complete thinking blocks during active tool loops.
+- **DeepSeek:** adaptive reasoning effort, native output caps, usage normalization, and safe removal of prior reasoning history when tools are absent.
+- **Qwen:** existing hybrid-thinking toggles and budgets now share the same task classification and quality-escalation rules.
+
+All provider controls are capability-gated. Unsupported request surfaces remain unchanged.
+
 ## Compatibility
 
 Condiments targets host capabilities rather than a fixed model allowlist.
@@ -146,6 +157,17 @@ Current evidence is promising but deliberately modest. These are workload-specif
 
 The tiny concise-answer task used about 1% more total tokens because fixed Codex input overhead outweighed the 31–35 output tokens saved. The live tool-schema experiment also showed no material total-token reduction. Condiments therefore currently claims **about 13–21% measured output reduction and 0–3% measured total reduction on its limited live Codex workloads**. Larger context and repetitive-log reductions are validated byte/token proxies until equivalent provider telemetry is collected.
 
+### Estimated reasoning savings
+
+The new direct-provider reasoning governor has not yet completed authenticated provider A/B evaluation. For capacity planning, a transparent workload model estimates the incremental saving from reasoning control alone:
+
+| Mode | Estimated reasoning-token reduction | Estimated total-token reduction |
+| --- | ---: | ---: |
+| `some` | **25–45%** | **3–14%** |
+| `full` | **40–60%** | **4–18%** |
+
+The model assumes 20% micro, 60% standard, and 20% complex requests; reasoning contributes 10–30% of total tokens; `low` uses 25–50% and `medium` uses 50–75% of `high` reasoning. It assumes no quality escalations and excludes context cleanup, cache reuse, output caps, and model-routing effects. These are **estimates, not measured savings or guarantees**. The [DeepSeek-V4.1-Flash report](research/DeepSeek_V41_Tech_Report.md) independently shows that moving from effort 100 to 25 reduced average response length by roughly 50–68% across eight reasoning benchmarks, supporting the direction of the estimate without validating Condiments' provider mappings.
+
 Read the evidence:
 
 - [Three-repository context evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/latest.md)
@@ -153,6 +175,7 @@ Read the evidence:
 - [Mayo output evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/codex-cli-mayo-output-cap-live.md)
 - [Tool-context evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/tool-context-evaluation.md)
 - [Lossless log and learned-cap evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/optimal-savings-eval.md)
+- [Provider reasoning savings estimate](https://github.com/DotsIsDev/condiments/blob/main/evals/results/provider-reasoning-savings-estimate.md)
 - [Implementation and evaluation plan](https://github.com/DotsIsDev/condiments/blob/main/docs/IMPLEMENTATION_PLAN.md)
 
 ## Skill
