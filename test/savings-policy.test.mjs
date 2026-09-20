@@ -32,8 +32,18 @@ test("classifies only explicit edit signals as exact edits and supports a force 
   assert.equal(classifySavingsWorkload("Replace old with new in src/a.js").workload, "exact-edit");
   assert.equal(classifySavingsWorkload("Investigate src/a.js and fix the bug").workload, "tool-heavy");
   assert.equal(classifySavingsWorkload("Run the failing tests and inspect the traceback").workload, "tool-heavy");
+  assert.equal(classifySavingsWorkload("Recall the exact decision from the previous session").workload, "memory-recall");
   assert.equal(classifySavingsWorkload("Look up the version in package.json").workload, "general");
   assert.equal(resolveSavingsRoute({ model: "gpt-future", level: "some", force: true }).effectiveLevel, "some");
+});
+
+test("enables evaluated zero-token memory for Luna recall work", () => {
+  const route = resolveSavingsRoute({ model: "gpt-5.6-luna", level: "full", task: "Recall the prior session decision" });
+  assert.deepEqual(route.enabledControls, ["ketchup"]);
+  assert.equal(route.expectedLogicalSavings, 0.32192);
+  assert.equal(route.source, "evals/results/net-savings-controls-live.md");
+  const plan = resolveSavingsPlan({ model: "gpt-5.6-luna", level: "full", task: "Recall the prior session decision" });
+  assert.match(plan.directive, /query exact local memory first/);
 });
 
 test("enables only Ranch for evaluated Luna tool-heavy work", () => {

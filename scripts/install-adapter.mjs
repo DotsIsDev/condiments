@@ -122,6 +122,7 @@ async function copyRuntimeBundle(destination) {
     "scripts/zero-token-memory.mjs",
     "scripts/tool-state.mjs",
     "scripts/workflow-pruner.mjs",
+    "scripts/run-net-savings-eval.mjs",
     "sidecars/llmlingua2.py",
     "references/policy.md",
     "references/policy-core.md",

@@ -8,6 +8,7 @@ import {
   installNativeOutputHooks,
   interceptNativeToolOutput,
 } from "../src/native-output.mjs";
+import { inspectToolState } from "../src/tool-state.mjs";
 
 async function writeState(root, preset) {
   const directory = path.join(root, ".condiments");
@@ -62,6 +63,8 @@ test("Claude PostToolUse replaces large structured output and preserves exact ar
     };
     const result = await interceptNativeToolOutput({
       cwd: root,
+      session_id: "session-a",
+      turn_id: "turn-a",
       tool_name: "Bash",
       tool_input: { command: "npm test" },
       tool_response: original,
@@ -76,6 +79,8 @@ test("Claude PostToolUse replaces large structured output and preserves exact ar
     assert.equal(replacement.isImage, false);
     assert.equal(await readFile(result.envelope.artifact_path, "utf8"), JSON.stringify(original));
     assert.ok(JSON.stringify(replacement).length < JSON.stringify(original).length / 10);
+    const toolState = await inspectToolState(root, { sessionId: "session-a", turnId: "turn-a" });
+    assert.ok(toolState.facts.some((fact) => fact.includes("ERROR actionable failure")));
   } finally {
     await rm(root, { recursive: true, force: true });
   }

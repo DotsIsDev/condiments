@@ -155,6 +155,9 @@ Current evidence is model- and workload-specific. The new conservative router en
 
 | Evaluation | `some` | `full` | Quality gate |
 | --- | ---: | ---: | --- |
+| Luna progressive skill disclosure | — | **5.1% less total** | 8/8 baseline and candidate checks passed; 95% lower saving bound was positive |
+| Luna zero-token local memory | — | **32.2% less total** | 8/8 exact-recall checks passed; local retrieval used zero provider calls |
+| Luna prompt-only compact tool state | — | **rejected** | Candidate reran the command in 6/8 pairs; quality gate failed and the 95% lower saving bound was negative |
 | Luna general tasks: total tokens | **12.9% more** | **10.4% more** | 21/24 optimized quality gates passed |
 | Sol exact edits, original run: total tokens | **7.6% more** | **9.8% less** | Exact files, untouched files, and tests passed |
 | Sol exact edits, two replication repeats | — | **29.6% more** | 4/4 exact-file and test gates passed |
@@ -164,7 +167,7 @@ Current evidence is model- and workload-specific. The new conservative router en
 | Offline targeted context proxy | **57.6–99.2% less** | **67.4–99.8% less** | 100% exact-symbol recall |
 | Initial visible tool-schema bytes | **96.0% less** | **95.9% less** | Required tool result passed |
 
-Condiments does not claim general savings. The earlier Sol exact-edit saving failed replication. With `full` requested, Luna tool-heavy debugging, tests, and noisy commands now enable Ranch alone, where paired runs observed **20.4–23.2% fewer logical tokens**. Lookups, simple edits, unevaluated strengths, and unevaluated model/workload pairs stay on baseline. Baseline requests omit policy text, and native Ranch enforcement avoids prompt overhead where available. Larger context and repetitive-log reductions remain byte/token proxies until equivalent provider telemetry is collected.
+Condiments does not claim general savings. Progressive disclosure is enabled for active routes. With `full` requested, Luna exact prior-session recall enables Ketchup's local retrieval, while Luna tool-heavy debugging, tests, and noisy commands enable Ranch alone. Prompt-only tool-state reuse remains disabled; reuse requires native blocking or an explicit caller-enforced check. Lookups, simple edits, unevaluated strengths, and unevaluated model/workload pairs stay on baseline. Larger context and repetitive-log reductions remain byte/token proxies until equivalent provider telemetry is collected.
 
 ### Estimated reasoning savings
 
@@ -187,6 +190,7 @@ Read the evidence:
 - [Provider reasoning savings estimate](https://github.com/DotsIsDev/condiments/blob/main/evals/results/provider-reasoning-savings-estimate.md)
 - [Paired live evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/paired-live-evaluation-v0.1.4.md)
 - [Savings-controls replication evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/savings-controls-evaluation-v0.1.4.md)
+- [Net-savings controls live evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/net-savings-controls-live.md)
 - [Implementation and evaluation plan](https://github.com/DotsIsDev/condiments/blob/main/docs/IMPLEMENTATION_PLAN.md)
 
 ## Skill

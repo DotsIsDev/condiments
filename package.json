@@ -1,6 +1,6 @@
 {
   "name": "@dotsisdev/condiments",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Portable token-efficiency controls for Codex CLI, Claude Code, Cursor, and OpenClaw.",
   "author": "DotsIsDev",
   "license": "MIT",
@@ -101,6 +101,7 @@
     "evaluate:cache-lineage": "node scripts/evaluate-cache-lineage.mjs",
     "evaluate:learned": "node scripts/run-optimal-savings-eval.mjs",
     "evaluate:responses": "node scripts/run-openai-responses-cap-eval.mjs",
+    "evaluate:net-savings": "node scripts/run-net-savings-eval.mjs",
     "skill:check": "node scripts/skill-disclosure.mjs audit"
   },
   "dependencies": {

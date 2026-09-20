@@ -22,6 +22,7 @@ function parseOptions(args) {
     else if (arg === "--exact-edit") options.exactEdit = true;
     else if (arg === "--direct-edit") options.directEdit = true;
     else if (arg === "--tool-heavy") options.toolHeavy = true;
+    else if (arg === "--memory-recall") options.memoryRecall = true;
     else if (arg === "--native-tool-control") options.nativeToolControl = true;
     else if (arg === "--policy-input-tokens") (options.outputEconomics ??= {}).policyInputTokens = Number(value(args, ++index, arg));
     else if (arg === "--projected-output-savings-tokens") (options.outputEconomics ??= {}).projectedOutputSavingsTokens = Number(value(args, ++index, arg));

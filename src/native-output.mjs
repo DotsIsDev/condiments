@@ -145,7 +145,6 @@ export async function interceptNativeToolOutput(payload, options = {}) {
   const original = extractToolOutput(payload, host);
   if (original === undefined) return { action: "missing-output", level, output: {} };
   const serialized = serializeToolOutput(original);
-  const toolState = await captureToolState(root, payload, tool, serialized, original);
   const profile = NATIVE_OUTPUT_PROFILES[level];
   const envelope = await offloadToolResult({
     tool,
@@ -156,6 +155,7 @@ export async function interceptNativeToolOutput(payload, options = {}) {
     artifactDirectory: path.join(root, ".condiments", "artifacts"),
     ...profile,
   });
+  const toolState = await captureToolState(root, payload, tool, serialized, original, envelope);
 
   if (!envelope.truncated) return { action: "pass", level, toolState, output: {} };
   const replacement = replacementFor(original, envelope, {
@@ -186,7 +186,7 @@ export async function interceptNativeToolOutput(payload, options = {}) {
   return { action: "intercepted", level, envelope, toolState, output };
 }
 
-async function captureToolState(root, payload, tool, serialized, original) {
+async function captureToolState(root, payload, tool, serialized, original, envelope) {
   const sessionId = payload?.session_id ?? payload?.sessionId ?? payload?.conversation_id ?? payload?.conversationId;
   const prompt = payload?.user_prompt ?? payload?.userPrompt ?? payload?.prompt ?? payload?.task;
   const turnId = payload?.turn_id ?? payload?.turnId ?? (prompt ? `prompt:${String(prompt)}` : null);
@@ -206,11 +206,22 @@ async function captureToolState(root, payload, tool, serialized, original) {
       inputFingerprint: toolInput?.workspace_fingerprint ?? payload?.workspace_fingerprint ?? "",
       exitStatus: exitStatus(original),
       content: serialized,
+      facts: extractToolFacts(serialized, envelope),
     });
     return { recorded: true, record: result.record };
   } catch (error) {
     return { recorded: false, reason: error.message };
   }
+}
+
+function extractToolFacts(serialized, envelope) {
+  const facts = (envelope?.error_matches ?? []).map((match) => match.text);
+  for (const line of String(serialized).split(/\r?\n|\\[rn]/)) {
+    if (!/\b(?:error|exception|failed|failure|fatal|panic|traceback)\b/i.test(line)) continue;
+    facts.push(line.slice(0, 1_000));
+    if (facts.length >= 20) break;
+  }
+  return [...new Set(facts.filter(Boolean))];
 }
 
 function stableJson(value) {

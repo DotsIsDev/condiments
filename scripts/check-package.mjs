@@ -36,6 +36,7 @@ for (const required of [
   "scripts/zero-token-memory.mjs",
   "scripts/tool-state.mjs",
   "scripts/workflow-pruner.mjs",
+  "scripts/run-net-savings-eval.mjs",
   "adapters/codex-cli/condiments.SKILL.md",
 ]) {
   try { await access(path.join(root, required)); } catch { errors.push(`missing ${required}`); }

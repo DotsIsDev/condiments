@@ -4,7 +4,7 @@ Read this module only when Ranch is active.
 
 Reuse sufficient results. Batch independent operations into one discovery round and one verification round. A single exceptional round requires named missing evidence and a written justification. Block exact duplicate calls outside the model prompt.
 
-Use `scripts/tool-state.mjs` to record result hashes and artifact paths. Before repeating a call, check the compact ledger. Reuse a successful artifact; change inputs or justify a retry after failure. Keep raw output outside the prompt and expose a bounded preview plus provenance.
+Use `scripts/tool-state.mjs` to record result hashes and artifact paths. Before repeating a call, check the compact ledger. Reuse a successful artifact only when the native guard or an explicit `check` result blocks execution; change inputs or justify a retry after failure. Keep raw output outside the prompt and expose a bounded preview plus provenance. Do not rely on prompt-only tool-state text to prevent a rerun.
 
 Bound large output with native hooks or `scripts/compact-tool-result.mjs`. Preserve actionable errors. Keep stable prompt/tool prefixes ordered and byte-stable; load tool schemas lazily where supported. Prefer one agent unless measured context isolation or latency gains exceed duplicated context cost.
 
