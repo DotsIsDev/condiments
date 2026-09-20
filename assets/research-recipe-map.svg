@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="570" viewBox="0 0 1000 570" role="img" aria-labelledby="title desc">
+  <title id="title">Condiments research to implementation map</title>
+  <desc id="desc">Research papers become four practical implementations, then enter paired evaluation. Passing controls ship for measured workloads while failing controls return to the lab.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0l12 6-12 6z" fill="#201d19"/></marker>
+    <marker id="down" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="#201d19"/></marker>
+  </defs>
+  <rect x="8" y="8" width="984" height="554" rx="28" fill="#fff8f2" stroke="#201d19" stroke-width="4"/>
+  <g font-family="Trebuchet MS, Arial, sans-serif" fill="#201d19">
+    <text x="48" y="62" font-size="31" font-weight="800">FROM RESEARCH LAB TO LUNCH TABLE</text>
+    <text x="48" y="90" font-size="15" font-weight="700" fill="#75685e">Cool paper ideas only ship after they save real provider tokens.</text>
+
+    <g transform="translate(45 125)">
+      <rect x="0" y="0" width="202" height="300" rx="24" fill="#e5f1ff" stroke="#201d19" stroke-width="3"/>
+      <text x="101" y="42" text-anchor="middle" font-size="22" font-weight="800">1. RESEARCH</text>
+      <path d="M64 70h74v75H64zM75 82h52M75 98h40M75 114h47" fill="#fff" stroke="#201d19" stroke-width="3" stroke-linecap="round"/>
+      <text x="101" y="178" text-anchor="middle" font-size="16" font-weight="800">Chinese reports</text>
+      <text x="101" y="202" text-anchor="middle" font-size="16" font-weight="800">ACL + arXiv</text>
+      <text x="101" y="226" text-anchor="middle" font-size="16" font-weight="800">provider docs</text>
+      <text x="101" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#5d6e83">Find ideas that can reduce</text>
+      <text x="101" y="282" text-anchor="middle" font-size="13" font-weight="700" fill="#5d6e83">tokens outside the model.</text>
+
+      <line x1="214" y1="150" x2="262" y2="150" stroke="#201d19" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="273" y="0" width="292" height="300" rx="24" fill="#fff1a8" stroke="#201d19" stroke-width="3"/>
+      <text x="419" y="42" text-anchor="middle" font-size="22" font-weight="800">2. BUILD THE RECIPES</text>
+      <g font-size="15" font-weight="800">
+        <circle cx="312" cy="86" r="18" fill="#f5c518" stroke="#201d19" stroke-width="2"/><text x="342" y="92">Progressive skill slices</text>
+        <circle cx="312" cy="137" r="18" fill="#e7352d" stroke="#201d19" stroke-width="2"/><text x="342" y="143">Zero-token local memory</text>
+        <circle cx="312" cy="188" r="18" fill="#b8d995" stroke="#201d19" stroke-width="2"/><text x="342" y="194">Compact tool-state guard</text>
+        <circle cx="312" cy="239" r="18" fill="#ff5a2e" stroke="#201d19" stroke-width="2"/><text x="342" y="245">Workflow pruning gate</text>
+      </g>
+      <text x="419" y="279" text-anchor="middle" font-size="13" font-weight="700" fill="#75650e">Every recipe keeps exact evidence nearby.</text>
+
+      <line x1="577" y1="150" x2="625" y2="150" stroke="#201d19" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="636" y="0" width="269" height="300" rx="24" fill="#f1e8ff" stroke="#201d19" stroke-width="3"/>
+      <text x="770" y="42" text-anchor="middle" font-size="22" font-weight="800">3. PAIRED TASTE TEST</text>
+      <g transform="translate(672 72)">
+        <rect x="0" y="0" width="88" height="73" rx="14" fill="#fff" stroke="#201d19" stroke-width="3"/>
+        <text x="44" y="31" text-anchor="middle" font-size="15" font-weight="800">PLAIN</text>
+        <text x="44" y="53" text-anchor="middle" font-size="13" font-weight="700">baseline</text>
+        <text x="99" y="44" font-size="19" font-weight="800">VS</text>
+        <rect x="130" y="0" width="88" height="73" rx="14" fill="#dff1c8" stroke="#201d19" stroke-width="3"/>
+        <text x="174" y="31" text-anchor="middle" font-size="15" font-weight="800">SAUCED</text>
+        <text x="174" y="53" text-anchor="middle" font-size="13" font-weight="700">candidate</text>
+      </g>
+      <text x="770" y="179" text-anchor="middle" font-size="14" font-weight="800">Same model. Same task.</text>
+      <text x="770" y="202" text-anchor="middle" font-size="14" font-weight="800">Count every token.</text>
+      <text x="770" y="225" text-anchor="middle" font-size="14" font-weight="800">Check the answer.</text>
+      <text x="770" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="#6f5d7f">Minimum 8 pairs + positive</text>
+      <text x="770" y="282" text-anchor="middle" font-size="13" font-weight="700" fill="#6f5d7f">95% lower savings bound.</text>
+    </g>
+
+    <path d="M770 425v23H204M204 448h586" fill="none" stroke="#201d19" stroke-width="4"/>
+    <path d="M204 448v15" fill="none" stroke="#201d19" stroke-width="4" marker-end="url(#down)"/>
+    <path d="M497 448v15" fill="none" stroke="#201d19" stroke-width="4" marker-end="url(#down)"/>
+    <path d="M790 448v15" fill="none" stroke="#201d19" stroke-width="4" marker-end="url(#down)"/>
+    <rect x="72" y="469" width="264" height="64" rx="18" fill="#dff1c8" stroke="#201d19" stroke-width="3"/>
+    <text x="204" y="495" text-anchor="middle" font-size="18" font-weight="800">PASS → SHIP IT</text>
+    <text x="204" y="517" text-anchor="middle" font-size="13" font-weight="700">only for the measured workload</text>
+    <rect x="365" y="469" width="264" height="64" rx="18" fill="#ffe4db" stroke="#201d19" stroke-width="3"/>
+    <text x="497" y="495" text-anchor="middle" font-size="18" font-weight="800">FAIL → SHELF IT</text>
+    <text x="497" y="517" text-anchor="middle" font-size="13" font-weight="700">baseline stays in charge</text>
+    <rect x="658" y="469" width="264" height="64" rx="18" fill="#e5f1ff" stroke="#201d19" stroke-width="3"/>
+    <text x="790" y="495" text-anchor="middle" font-size="18" font-weight="800">LEARN → RETEST</text>
+    <text x="790" y="517" text-anchor="middle" font-size="13" font-weight="700">new host, model, or workload</text>
+  </g>
+</svg>

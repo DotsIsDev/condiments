@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="400" viewBox="0 0 1000 400" role="img" aria-labelledby="title desc">
+  <title id="title">How Condiments routes a task</title>
+  <desc id="desc">A task goes through a workload taste test, receives only validated controls, completes with verification, and falls back to baseline for unknown combinations.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0 0l12 6-12 6z" fill="#201d19"/></marker>
+  </defs>
+  <rect x="8" y="8" width="984" height="384" rx="28" fill="#f8fbef" stroke="#201d19" stroke-width="4"/>
+  <g font-family="Trebuchet MS, Arial, sans-serif" fill="#201d19">
+    <text x="48" y="62" font-size="31" font-weight="800">HOW THE SAUCE GETS PICKED</text>
+    <text x="48" y="90" font-size="15" font-weight="700" fill="#657057">No guessing. Every task gets a tiny taste test first.</text>
+
+    <g transform="translate(42 132)">
+      <rect x="0" y="0" width="180" height="132" rx="24" fill="#fff" stroke="#201d19" stroke-width="3"/>
+      <text x="90" y="40" text-anchor="middle" font-size="31">&lt;/&gt;</text>
+      <text x="90" y="76" text-anchor="middle" font-size="19" font-weight="800">YOUR TASK</text>
+      <text x="90" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#6d6257">edit • debug • recall</text>
+
+      <line x1="190" y1="66" x2="244" y2="66" stroke="#201d19" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="255" y="0" width="200" height="132" rx="24" fill="#fff1a8" stroke="#201d19" stroke-width="3"/>
+      <circle cx="355" cy="42" r="23" fill="#f5c518" stroke="#201d19" stroke-width="3"/>
+      <path d="M341 43c8-18 20-18 28 0M355 20v9" fill="none" stroke="#201d19" stroke-width="3" stroke-linecap="round"/>
+      <text x="355" y="83" text-anchor="middle" font-size="19" font-weight="800">TASTE TEST</text>
+      <text x="355" y="107" text-anchor="middle" font-size="14" font-weight="700" fill="#6d6257">model + workload</text>
+
+      <line x1="465" y1="66" x2="519" y2="66" stroke="#201d19" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="530" y="0" width="180" height="132" rx="24" fill="#e8f6d7" stroke="#201d19" stroke-width="3"/>
+      <g transform="translate(573 21)">
+        <rect x="0" y="10" width="28" height="49" rx="7" fill="#fff2c7" stroke="#201d19" stroke-width="2"/>
+        <rect x="37" y="3" width="28" height="56" rx="7" fill="#e7352d" stroke="#201d19" stroke-width="2"/>
+        <rect x="74" y="14" width="28" height="45" rx="7" fill="#b8d995" stroke="#201d19" stroke-width="2"/>
+      </g>
+      <text x="620" y="105" text-anchor="middle" font-size="19" font-weight="800">RIGHT BOTTLES</text>
+      <text x="620" y="125" text-anchor="middle" font-size="13" font-weight="700" fill="#6d6257">only proven controls</text>
+
+      <line x1="720" y1="66" x2="774" y2="66" stroke="#201d19" stroke-width="4" marker-end="url(#arrow)"/>
+
+      <rect x="785" y="0" width="165" height="132" rx="24" fill="#d8edff" stroke="#201d19" stroke-width="3"/>
+      <circle cx="868" cy="42" r="23" fill="#3c86df" stroke="#201d19" stroke-width="3"/>
+      <path d="M855 42l9 9 18-22" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="868" y="83" text-anchor="middle" font-size="19" font-weight="800">VERIFY</text>
+      <text x="868" y="107" text-anchor="middle" font-size="14" font-weight="700" fill="#6d6257">same required result</text>
+    </g>
+
+    <path d="M397 286c0 48 54 48 86 48h185" fill="none" stroke="#ff5a2e" stroke-width="4" stroke-dasharray="10 8" marker-end="url(#arrow)"/>
+    <rect x="682" y="305" width="266" height="55" rx="17" fill="#ffe4db" stroke="#201d19" stroke-width="3"/>
+    <text x="815" y="328" text-anchor="middle" font-size="16" font-weight="800">MYSTERY COMBO?</text>
+    <text x="815" y="348" text-anchor="middle" font-size="14" font-weight="700">Use baseline. Keep the tokens honest.</text>
+  </g>
+</svg>
