@@ -7,6 +7,7 @@ import {
   checkpointTemplate,
   generateCheckpoint,
   renderCheckpoint,
+  resolveCheckpointDecision,
   validateCheckpoint,
 } from "../src/checkpoint.mjs";
 
@@ -19,6 +20,11 @@ async function main() {
   }
 
   const candidate = JSON.parse(await readInput(options.inputPath));
+
+  if (options.action === "decide") {
+    process.stdout.write(`${JSON.stringify(resolveCheckpointDecision(candidate), null, 2)}\n`);
+    return;
+  }
 
   if (options.action === "validate") {
     const result = validateCheckpoint(candidate);
@@ -43,8 +49,8 @@ async function main() {
 
 function parseOptions(args) {
   const action = args[0];
-  if (!new Set(["template", "generate", "validate", "render"]).has(action)) {
-    throw new Error("Use template, generate, validate, or render.");
+  if (!new Set(["template", "decide", "generate", "validate", "render"]).has(action)) {
+    throw new Error("Use template, decide, generate, validate, or render.");
   }
 
   const options = { action, inputPath: undefined, outputPath: undefined };

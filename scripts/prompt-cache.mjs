@@ -5,15 +5,22 @@ import path from "node:path";
 import process from "node:process";
 import {
   appendCacheTelemetry,
+  composeCacheFriendlyPrompt,
   createCacheTelemetryRecord,
   decoratePromptCacheRequest,
   extractCacheTelemetry,
+  prepareCacheAwareRequest,
   readCacheTelemetry,
   summarizeCacheTelemetry,
 } from "../src/prompt-cache.mjs";
 
 async function main() {
   const options = parseOptions(process.argv.slice(2));
+  if (options.action === "compose") {
+    const payload = JSON.parse(await read(options.input));
+    process.stdout.write(`${JSON.stringify(composeCacheFriendlyPrompt(payload), null, 2)}\n`);
+    return;
+  }
   if (options.action === "report") {
     const records = options.input
       ? extractCacheTelemetry(await read(options.input), { provider: options.provider, source: "cli-transcript" })
@@ -22,6 +29,16 @@ async function main() {
     return;
   }
   const payload = JSON.parse(await read(options.input));
+  if (options.action === "prepare") {
+    const request = payload.request ?? {};
+    const preparationOptions = {
+      ...(payload.options ?? {}),
+      level: options.level,
+      stablePrefix: options.stablePrefix ?? payload.options?.stablePrefix,
+    };
+    process.stdout.write(`${JSON.stringify(prepareCacheAwareRequest(options.provider, request, preparationOptions), null, 2)}\n`);
+    return;
+  }
   if (options.action === "decorate") {
     process.stdout.write(`${JSON.stringify(decoratePromptCacheRequest(options.provider, payload, {
       level: options.level,
@@ -45,8 +62,8 @@ async function main() {
 
 function parseOptions(args) {
   const action = args.shift();
-  if (!["decorate", "ingest", "report"].includes(action)) {
-    throw new Error("Action required: decorate, ingest, or report.");
+  if (!["compose", "prepare", "decorate", "ingest", "report"].includes(action)) {
+    throw new Error("Action required: compose, prepare, decorate, ingest, or report.");
   }
   const options = { action, root: process.cwd(), input: undefined, provider: undefined };
   for (let index = 0; index < args.length; index += 1) {
@@ -62,8 +79,8 @@ function parseOptions(args) {
     else if (arg === "--legacy") options.legacy = true;
     else throw new Error(`Unknown option '${arg}'.`);
   }
-  if ((action === "decorate" || action === "ingest") && !options.input) throw new Error("--input is required; use - for stdin.");
-  if (action === "decorate" && (!options.provider || !options.level)) throw new Error("decorate requires --provider and --level.");
+  if (["compose", "prepare", "decorate", "ingest"].includes(action) && !options.input) throw new Error("--input is required; use - for stdin.");
+  if (["prepare", "decorate"].includes(action) && (!options.provider || !options.level)) throw new Error(`${action} requires --provider and --level.`);
   if (action === "report" && options.input && !options.provider) throw new Error("report --input requires --provider.");
   return options;
 }

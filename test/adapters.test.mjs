@@ -42,6 +42,10 @@ for (const host of ADAPTER_ORDER) {
       await access(path.join(destinations.main, "scripts", "reasoning-governor.mjs"));
       await access(path.join(destinations.main, "scripts", "qwen-thinking.mjs"));
       await access(path.join(destinations.main, "scripts", "deepseek-reasoning.mjs"));
+      await access(path.join(destinations.main, "scripts", "skill-disclosure.mjs"));
+      await access(path.join(destinations.main, "scripts", "zero-token-memory.mjs"));
+      await access(path.join(destinations.main, "scripts", "tool-state.mjs"));
+      await access(path.join(destinations.main, "scripts", "workflow-pruner.mjs"));
       await access(path.join(destinations.main, "sidecars", "llmlingua2.py"));
       await access(path.join(destinations.main, "references", "completion-policy.md"));
       await access(path.join(destinations.main, "references", "tool-context.md"));
@@ -52,6 +56,12 @@ for (const host of ADAPTER_ORDER) {
       await access(path.join(destinations.main, "references", "output-cap-learning.md"));
       await access(path.join(destinations.main, "references", "research-controls.md"));
       await access(path.join(destinations.main, "references", "reasoning-governor.md"));
+      await access(path.join(destinations.main, "references", "policy-core.md"));
+      await access(path.join(destinations.main, "references", "controls", "ranch.md"));
+      await access(path.join(destinations.main, "references", "hosts", host + ".md"));
+      await access(path.join(destinations.main, "references", "zero-token-memory.md"));
+      await access(path.join(destinations.main, "references", "compact-tool-state.md"));
+      await access(path.join(destinations.main, "references", "workflow-pruning.md"));
       await access(path.join(destinations.main, "capabilities.json"));
       await access(path.join(destinations.alias, "SKILL.md"));
       assert.match(await readFile(path.join(destinations.alias, "SKILL.md"), "utf8"), /name: cond/);
@@ -88,6 +98,10 @@ for (const host of ADAPTER_ORDER) {
       assert.equal(installedCapabilities.providerReasoningGovernor, true);
       assert.equal(installedCapabilities.openaiReasoningRequestControl, true);
       assert.equal(installedCapabilities.anthropicReasoningRequestControl, true);
+      assert.equal(installedCapabilities.progressiveSkillDisclosure, true);
+      assert.equal(installedCapabilities.zeroTokenMemory, true);
+      assert.equal(installedCapabilities.compactToolState, true);
+      assert.equal(installedCapabilities.amortizedWorkflowPruning, true);
       assert.equal(installedCapabilities.qwenThinkingRequestControl, true);
       assert.equal(installedCapabilities.nativeQwenThinkingControl, false);
       assert.equal(installedCapabilities.deepseekReasoningRequestControl, true);

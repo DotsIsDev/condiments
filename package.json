@@ -74,7 +74,12 @@
     "condiments-llmlingua": "scripts/llmlingua-sidecar.mjs",
     "condiments-reasoning": "scripts/reasoning-governor.mjs",
     "condiments-qwen-thinking": "scripts/qwen-thinking.mjs",
-    "condiments-deepseek-reasoning": "scripts/deepseek-reasoning.mjs"
+    "condiments-deepseek-reasoning": "scripts/deepseek-reasoning.mjs",
+    "condiments-savings-policy": "scripts/savings-policy.mjs",
+    "condiments-skill-disclosure": "scripts/skill-disclosure.mjs",
+    "condiments-zero-memory": "scripts/zero-token-memory.mjs",
+    "condiments-tool-state": "scripts/tool-state.mjs",
+    "condiments-workflow-pruner": "scripts/workflow-pruner.mjs"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
@@ -95,7 +100,8 @@
     "evaluate:tool-context:live": "node scripts/run-live-tool-context-eval.mjs",
     "evaluate:cache-lineage": "node scripts/evaluate-cache-lineage.mjs",
     "evaluate:learned": "node scripts/run-optimal-savings-eval.mjs",
-    "evaluate:responses": "node scripts/run-openai-responses-cap-eval.mjs"
+    "evaluate:responses": "node scripts/run-openai-responses-cap-eval.mjs",
+    "skill:check": "node scripts/skill-disclosure.mjs audit"
   },
   "dependencies": {
     "openai": "^7.15.0"

@@ -9,8 +9,17 @@ import {
   CheckpointValidationError,
   generateCheckpoint,
   renderCheckpoint,
+  resolveCheckpointDecision,
   validateCheckpoint,
 } from "../src/checkpoint.mjs";
+
+test("creates checkpoints only for established sessions near context pressure", () => {
+  assert.equal(resolveCheckpointDecision({ level: "full", turnCount: 2, usedTokens: 9_000, contextWindowTokens: 10_000 }).reason, "short-session");
+  assert.equal(resolveCheckpointDecision({ level: "full", turnCount: 8, usedTokens: 6_000, contextWindowTokens: 10_000 }).create, false);
+  assert.equal(resolveCheckpointDecision({ level: "full", turnCount: 8, usedTokens: 7_200, contextWindowTokens: 10_000 }).create, true);
+  assert.equal(resolveCheckpointDecision({ level: "some", turnCount: 8, compactionImminent: true }).create, true);
+  assert.equal(resolveCheckpointDecision({ level: "full", turnCount: 1, explicit: true }).create, true);
+});
 
 const VALID_DRAFT = Object.freeze({
   goal: "Implement checkpoint support",

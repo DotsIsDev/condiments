@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { analyzeFileRead, guardCodexCommand } from "../src/command-guard.mjs";
+import { recordToolResult } from "../src/tool-state.mjs";
 
 async function fixture(level, bytes = 100_000) {
   const root = await mkdtemp(path.join(os.tmpdir(), "condiments-command-guard-"));
@@ -89,6 +90,70 @@ test("command guard CLI emits valid PreToolUse denial JSON", async () => {
     const output = JSON.parse(run.stdout);
     assert.equal(output.hookSpecificOutput.hookEventName, "PreToolUse");
     assert.equal(output.hookSpecificOutput.permissionDecision, "deny");
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("native Ranch permits one discovery and verification round and blocks duplicates", async () => {
+  const root = await fixture("full");
+  const base = { cwd: root, session_id: "session", turn_id: "turn", user_prompt: "Debug the failing tests", tool_name: "Bash" };
+  try {
+    assert.equal((await guardCodexCommand({ ...base, tool_input: { command: "rg -n error src" } })).round.allow, true);
+    const duplicate = await guardCodexCommand({ ...base, tool_input: { command: "rg   -n error src" } });
+    assert.equal(duplicate.action, "blocked");
+    assert.match(duplicate.round.reason, /duplicate/);
+    assert.equal((await guardCodexCommand({ ...base, tool_input: { command: "npm test" } })).round.phase, "verification");
+    const extra = await guardCodexCommand({ ...base, tool_input: { command: "npm run lint" } });
+    assert.equal(extra.action, "blocked");
+    const justified = await guardCodexCommand({ ...base, tool_input: { command: "npm run lint # condiments:extra-tool=test output omitted required evidence" } });
+    assert.equal(justified.round.exceptional, true);
+    const ledgerRoot = path.join(root, ".condiments", "tool-rounds");
+    const ledgerFiles = await readdir(ledgerRoot, { recursive: true });
+    const ledger = await readFile(path.join(ledgerRoot, ledgerFiles.find((item) => item.endsWith(".json"))), "utf8");
+    assert.doesNotMatch(ledger, /rg|npm|error|lint/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("native Ranch leaves simple lookups outside round accounting", async () => {
+  const root = await fixture("full");
+  const base = { cwd: root, session_id: "session", turn_id: "turn", user_prompt: "Look up the package version", tool_name: "Bash" };
+  try {
+    assert.equal((await guardCodexCommand({ ...base, tool_input: { command: "rg -n version package.json" } })).round, null);
+    assert.equal((await guardCodexCommand({ ...base, tool_input: { command: "rg -n version package.json" } })).action, "not-file-reader");
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("native Ranch serializes concurrent duplicate decisions", async () => {
+  const root = await fixture("full");
+  const payload = {
+    cwd: root, session_id: "parallel-session", turn_id: "parallel-turn",
+    user_prompt: "Debug a failing test", tool_name: "Bash", tool_input: { command: "rg -n failure src" },
+  };
+  try {
+    const results = await Promise.all([guardCodexCommand(payload), guardCodexCommand(payload)]);
+    assert.equal(results.filter((result) => result.round?.allow === true).length, 1);
+    assert.equal(results.filter((result) => result.action === "blocked").length, 1);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("native Ranch returns a recorded artifact instead of repeating a successful call", async () => {
+  const root = await fixture("full");
+  const base = { cwd: root, session_id: "reuse-session", turn_id: "reuse-turn", user_prompt: "Debug the failing tests", tool_name: "Bash" };
+  try {
+    const saved = await recordToolResult(root, {
+      sessionId: "reuse-session", turnId: "reuse-turn", tool: "Bash", call: "npm test", exitStatus: 0, content: "all passed",
+    });
+    const result = await guardCodexCommand({ ...base, tool_input: { command: "npm test" } });
+    assert.equal(result.action, "blocked");
+    assert.equal(result.reuse.action, "reuse");
+    assert.match(result.output.hookSpecificOutput.permissionDecisionReason, new RegExp(saved.record.contentHash));
   } finally {
     await rm(root, { recursive: true, force: true });
   }

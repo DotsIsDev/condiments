@@ -6,13 +6,59 @@ import { spawnSync } from "node:child_process";
 import test from "node:test";
 import {
   appendCacheTelemetry,
+  composeCacheFriendlyPrompt,
   createCacheTelemetryRecord,
   decoratePromptCacheRequest,
   extractCacheTelemetry,
   handleCacheTelemetryHook,
+  prepareCacheAwareRequest,
   readCacheTelemetry,
   summarizeCacheTelemetry,
 } from "../src/prompt-cache.mjs";
+
+test("cache-aware construction preserves expensive lineage when savings miss break-even and appends task last", () => {
+  const previous = {
+    model: "gpt-5.6-luna",
+    tools: [{ type: "function", name: "first" }, { type: "function", name: "second" }],
+    reasoning: { effort: "low" },
+    instructions: "stable-prefix",
+    input: "old task",
+  };
+  const result = prepareCacheAwareRequest("openai", {
+    ...previous,
+    model: "gpt-6-astra",
+    tools: [...previous.tools].reverse(),
+    reasoning: { effort: "high" },
+  }, {
+    level: "full",
+    stablePrefix: "stable-prefix",
+    task: "new changing task",
+    previousRequest: previous,
+    lineageMetrics: { cachedTokensAtRisk: 1_000, expectedOutputTokenSavings: 100 },
+  });
+  assert.equal(result.request.model, previous.model);
+  assert.deepEqual(result.request.tools, previous.tools);
+  assert.deepEqual(result.request.reasoning, previous.reasoning);
+  assert.equal(result.request.input.endsWith("new changing task"), true);
+  assert.doesNotMatch(result.request.input, /stable-prefix/);
+  assert.equal(result.request.instructions, "stable-prefix");
+  assert.equal(result.lineage.preserve, true);
+});
+
+test("cache-friendly prompt keeps the prefix exact, deduplicates stable instructions, and puts task last", () => {
+  const prefix = "stable-prefix\nbyte-exact";
+  const result = composeCacheFriendlyPrompt({
+    stablePrefix: prefix,
+    stableInstructions: [prefix, "shared policy", "shared policy"],
+    dynamicContext: "current evidence",
+    task: "change this task",
+  });
+  assert.equal(result.stablePrefix, prefix);
+  assert.equal(result.prompt.startsWith(prefix), true);
+  assert.equal(result.prompt.endsWith("change this task"), true);
+  assert.equal(result.prompt.match(/shared policy/g).length, 1);
+  assert.equal(result.removedDuplicateInstructions, 2);
+});
 
 test("decorates OpenAI requests with stable keys and supported modern TTL", () => {
   const first = decoratePromptCacheRequest("openai", { model: "gpt-5.6-test", input: "hi" }, {

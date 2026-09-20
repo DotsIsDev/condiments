@@ -149,6 +149,7 @@ test("adaptive governor decorates output and OpenAI tool-call caps", () => {
     level: "full",
     task: "Fix src/cart.ts discount function",
     directEdit: true,
+    outputEconomics: { policyInputTokens: 10, projectedOutputSavingsTokens: 100 },
   });
   assert.equal(result.request.max_output_tokens, 512);
   assert.equal(result.request.max_tool_calls, 4);
@@ -160,8 +161,30 @@ test("adaptive governor keeps Anthropic tool cap as prompt contract", () => {
   const result = decorateProviderOutputRequest("anthropic", {}, {
     level: "full",
     taskClass: "complex",
+    outputEconomics: { policyInputTokens: 10, projectedOutputSavingsTokens: 100 },
   });
   assert.equal(result.request.max_tokens, 2_048);
   assert.equal("max_tool_calls" in result.request, false);
   assert.equal(result.control.tool_mechanism, "prompt-contract");
+});
+
+test("provider decoration expands the cap for required evidence", () => {
+  const result = decorateProviderOutputRequest("openai", {}, {
+    level: "full",
+    taskClass: "standard",
+    requiredEvidenceTokens: 700,
+    outputEconomics: { policyInputTokens: 10, projectedOutputSavingsTokens: 100 },
+  });
+  assert.equal(result.request.max_output_tokens, 764);
+  assert.equal(result.control.governor.capExpandedForEvidence, true);
+});
+
+test("adaptive provider cap is skipped when its prompt overhead is not repaid", () => {
+  const result = decorateProviderOutputRequest("openai", {}, {
+    level: "full",
+    taskClass: "standard",
+    outputEconomics: { policyInputTokens: 30, projectedOutputSavingsTokens: 20 },
+  });
+  assert.equal("max_output_tokens" in result.request, false);
+  assert.equal(result.control.governor.active, false);
 });

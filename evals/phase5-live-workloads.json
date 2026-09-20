@@ -8,6 +8,20 @@
       "provider": "openai",
       "timeoutMs": 120000
     },
+    "codex-sol": {
+      "command": "codex",
+      "args": ["exec", "--ephemeral", "--model", "gpt-5.6-sol", "--skip-git-repo-check", "--sandbox", "read-only", "--output-schema", "{schemaPath}", "--json", "-c", "model_reasoning_effort=\"medium\"", "-C", "{repository}", "-"],
+      "outputFormat": "codex-jsonl",
+      "provider": "openai",
+      "timeoutMs": 120000
+    },
+    "codex-astra": {
+      "command": "codex",
+      "args": ["exec", "--ephemeral", "--model", "gpt-6-astra", "--skip-git-repo-check", "--sandbox", "read-only", "--output-schema", "{schemaPath}", "--json", "-c", "model_reasoning_effort=\"medium\"", "-C", "{repository}", "-"],
+      "outputFormat": "codex-jsonl",
+      "provider": "openai",
+      "timeoutMs": 120000
+    },
     "claude-code": {
       "command": "claude",
       "args": ["-p", "--model", "haiku", "--effort", "low", "--max-budget-usd", "0.05", "--permission-mode", "plan", "--no-session-persistence", "--output-format", "json", "--json-schema", "{schemaJson}"],

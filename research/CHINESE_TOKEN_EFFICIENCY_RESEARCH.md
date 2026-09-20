@@ -2,6 +2,8 @@
 
 Research cutoff: 2026-09-14.
 
+Update: [Chinese Research Update: Net Token Savings for Condiments](CHINESE_NET_TOKEN_SAVINGS_UPDATE_2026-09-20.md) applies a stricter full-trajectory and billed-cost screen to newer agent, memory, workflow, and skill-compression research through 2026-09-20.
+
 This review uses primary papers, official project repositories, and official model reports from China-based universities and industrial laboratories. It separates provider-billed token reduction from model-internal memory or latency reduction. Reported percentages apply only to each paper's evaluated models and datasets; they are not Condiments savings claims.
 
 ## Main conclusion

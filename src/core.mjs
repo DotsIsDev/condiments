@@ -159,11 +159,13 @@ const PROMPT_POLICY = Object.freeze({
   }),
   ranch: Object.freeze({
     some: Object.freeze([
-      "Batch independent reads; never repeat success; filter noisy output in-command; keep model/reasoning/tool order stable.",
+      "Reuse sufficient tool results. Batch one discovery round and one verification round; extra calls require missing required evidence and a written justification.",
+      "Filter noisy output in-command; keep model/reasoning/tool order stable.",
       "Losslessly dictionary-compress repetitive log templates before sending large output when the encoded form is smaller.",
     ]),
     full: Object.freeze([
-      "One discovery, one verification; batch reads; never repeat success; filter large output; keep cache prefix/settings stable.",
+      "One discovery round and one verification round; batch calls and reuse results. Extra calls require missing required evidence and a written justification.",
+      "Filter large output; keep the policy prefix byte-stable and append changing task data last.",
       "Use hash-verified lossless dictionary encoding for repetitive logs when it fits the result budget.",
     ]),
   }),
@@ -371,6 +373,8 @@ export function renderPolicyPrefix() {
     "o brief/simple or <=120 words/simple/terse; c targeted or exact lines; x milestone or exact checkpoint; t batch/filter or batch/cache/dedupe; z adaptive or low then escalate.",
     "State tags are deltas. Keep prior values. reset means all off. q=verify means correctness and material failures stay required. Internal checkpoint/tool state never expands final reply.",
     "For m=s/f: classify output; f caps micro/standard/complex at 128/512/2048 tokens; bound tools; retry only missing required results. Edit work: direct edit first; suppress recap; else native FIM, smallest exact changed block, unified diff. Never reproduce a full existing file unless asked.",
+    "For r=s/f: reuse sufficient results; batch at most one discovery and one verification round; extra calls need missing required evidence plus justification. Keep this prefix byte-stable and append changing task data last.",
+    "For k=s/f: checkpoint only in an established session near context pressure; skip short sessions. Savings route: evaluated Luna/Sol/Astra pairs and unevaluated pairs use baseline unless explicitly forced; no automatic savings route is currently enabled.",
     "</cond-policy>",
   ].join("\n");
 }

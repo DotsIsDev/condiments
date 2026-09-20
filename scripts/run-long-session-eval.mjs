@@ -28,7 +28,10 @@ async function main() {
   const options = parseOptions(process.argv.slice(2));
   const sourceRoot = path.resolve(options.repository);
   const schema = path.resolve(options.schema);
-  const route = ROUTES[options.mode];
+  const route = {
+    model: options.model ?? ROUTES[options.mode].model,
+    effort: options.effort ?? ROUTES[options.mode].effort,
+  };
   const prompts = buildPrompts(options.mode);
   const workspaceRoot = path.join(PACKAGE_ROOT, ".eval-workspaces");
   await mkdir(workspaceRoot, { recursive: true });
@@ -329,6 +332,8 @@ function parseOptions(args) {
     timeout: 180_000,
     output: undefined,
     keepWorkspace: false,
+    model: undefined,
+    effort: undefined,
     budget: {
       maxTotalTokens: 75_000,
       delayedTokenReserve: 10_000,
@@ -345,6 +350,8 @@ function parseOptions(args) {
     else if (arg === "--threshold") options.threshold = Number(value(args, ++index, arg));
     else if (arg === "--timeout") options.timeout = Number(value(args, ++index, arg));
     else if (arg === "--output") options.output = value(args, ++index, arg);
+    else if (arg === "--model") options.model = value(args, ++index, arg);
+    else if (arg === "--effort") options.effort = value(args, ++index, arg);
     else if (arg === "--max-total-tokens") options.budget.maxTotalTokens = Number(value(args, ++index, arg));
     else if (arg === "--delayed-token-reserve") options.budget.delayedTokenReserve = Number(value(args, ++index, arg));
     else if (arg === "--max-model-calls") options.budget.maxModelCalls = Number(value(args, ++index, arg));

@@ -6,6 +6,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+
+- Progressive skill disclosure with deterministic release auditing and compact host/control modules.
+- Zero-token local memory with content-addressed raw evidence, deterministic signal lookup, and pressure-aware consolidation decisions.
+- Compact tool-state artifacts that let Ranch reuse successful results and suppress unchanged failed calls.
+- Amortized workflow-pruning decisions with paired-sample, quality, confidence, and break-even gates.
+
+### Fixed
+
+- Provider evaluation prompts now include the stable Condiments protocol prefix before compact state deltas, preventing invalid evaluations where models received control codes without their semantics.
+- Ranch now reuses sufficient tool results and defaults to one discovery plus one verification round; exceptional rounds require missing required evidence and a written justification.
+- Codex now enforces Ranch rounds and duplicate suppression in the native pre-tool hook, without spending prompt tokens on those limits.
+
+### Changed
+
+- Skill entry points now load the stable policy core, current host module, and active control modules instead of eagerly loading the combined policy reference.
+- Native Ranch output handling records exact tool evidence for later local reuse before applying model-visible output bounds.
+- Long-session evaluation accepts `--model` and `--effort` overrides so all modes can use the same route for causal memory comparisons.
+- Added evidence-gated routing. Replication demoted Sol exact edits after the earlier saving failed to reproduce; only the validated Luna tool-heavy Ranch route activates automatically.
+- Cache-friendly prompt assembly preserves a byte-stable prefix, removes repeated stable instructions, and appends changing task data last.
+- Checkpoints now require an established session near measured context pressure or imminent compaction, while short sessions skip checkpoint work.
+- Adaptive output caps now preserve required evidence through an artifact or an expanded provider cap.
+- A 38-call replication evaluation demoted all automatic savings routes to baseline: tuned Ranch reduced logical tokens only on tool-heavy work and raised uncached input, while Sol exact-edit savings failed two new repeats.
+- Luna tool-heavy work with requested `full` now enables Ranch alone; lookups, simple edits, unevaluated strengths, and unevaluated model/workload pairs stay at baseline.
+- Baseline requests omit the Condiments policy, while active routes inject only each active control's small directive.
+- Cache-aware request preparation preserves expensive request lineage and appends changing task data last.
+- Mayo task caps now require projected output savings to exceed their policy-input cost.
+
 ## [0.1.4] - 2026-09-19
 
 ### Added

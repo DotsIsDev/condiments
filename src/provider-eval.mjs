@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { applyCommand, createDefaultState, parseCommand, renderPrompt } from "./core.mjs";
+import { SAVINGS_CONTROLS, renderConditionalPolicy } from "./savings-policy.mjs";
 import {
   createOutputCapTelemetryRecord,
   outputCapQualityFailures,
@@ -14,11 +14,11 @@ export const EVAL_MODES = Object.freeze(["baseline", "some", "full"]);
 
 export function buildEvaluationPrompt(workload, mode, options = {}) {
   if (!EVAL_MODES.includes(mode)) throw new Error(`Unknown evaluation mode '${mode}'.`);
-  const policy = mode === "baseline"
-    ? ""
-    : renderPrompt(applyCommand(createDefaultState(), parseCommand(
-      options.control ? `/cond ${options.control} ${mode}` : `/cond ${mode}`,
-    )));
+  const activeControls = options.control ? [options.control] : SAVINGS_CONTROLS;
+  const policy = mode === "baseline" ? "" : renderConditionalPolicy({
+    controls: Object.fromEntries(activeControls.map((control) => [control, mode])),
+    nativeToolControl: options.nativeToolControl === true,
+  });
   const task = [
     "Read-only evaluation. Do not edit files.",
     workload.prompt,

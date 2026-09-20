@@ -27,6 +27,15 @@ for (const required of [
   "scripts/reasoning-governor.mjs",
   "src/reasoning-governor.mjs",
   "references/reasoning-governor.md",
+  "references/policy-core.md",
+  "references/controls/ranch.md",
+  "references/zero-token-memory.md",
+  "references/compact-tool-state.md",
+  "references/workflow-pruning.md",
+  "scripts/skill-disclosure.mjs",
+  "scripts/zero-token-memory.mjs",
+  "scripts/tool-state.mjs",
+  "scripts/workflow-pruner.mjs",
   "adapters/codex-cli/condiments.SKILL.md",
 ]) {
   try { await access(path.join(root, required)); } catch { errors.push(`missing ${required}`); }

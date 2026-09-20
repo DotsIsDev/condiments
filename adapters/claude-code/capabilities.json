@@ -41,5 +41,9 @@
   "nativeDeepSeekReasoningControl": false,
   "providerReasoningGovernor": true,
   "openaiReasoningRequestControl": true,
-  "anthropicReasoningRequestControl": true
+  "anthropicReasoningRequestControl": true,
+  "progressiveSkillDisclosure": true,
+  "zeroTokenMemory": true,
+  "compactToolState": true,
+  "amortizedWorkflowPruning": true
 }

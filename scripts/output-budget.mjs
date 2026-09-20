@@ -42,6 +42,11 @@ async function main() {
     taskClass: options.taskClass,
     phase: options.phase,
     directEdit: options.directEdit,
+    requiredEvidenceTokens: options.requiredEvidenceTokens,
+    outputEconomics: {
+      policyInputTokens: options.policyInputTokens,
+      projectedOutputSavingsTokens: options.projectedOutputSavingsTokens,
+    },
     host: options.host,
     telemetryRecords,
   });
@@ -63,6 +68,9 @@ function parseOptions(args) {
     else if (arg === "--task-class") options.taskClass = value(args, ++index, arg);
     else if (arg === "--phase") options.phase = value(args, ++index, arg);
     else if (arg === "--direct-edit") options.directEdit = true;
+    else if (arg === "--required-evidence-tokens") options.requiredEvidenceTokens = positiveInteger(value(args, ++index, arg), arg);
+    else if (arg === "--policy-input-tokens") options.policyInputTokens = nonNegativeInteger(value(args, ++index, arg), arg);
+    else if (arg === "--projected-output-savings-tokens") options.projectedOutputSavingsTokens = nonNegativeInteger(value(args, ++index, arg), arg);
     else if (arg === "--trained") options.trained = true;
     else if (arg === "--requested") options.requested = positiveInteger(value(args, ++index, arg), arg);
     else if (arg === "--event-id") options.eventId = value(args, ++index, arg);
@@ -85,6 +93,12 @@ function value(args, index, option) {
 function positiveInteger(input, option) {
   const parsed = Number(input);
   if (!Number.isSafeInteger(parsed) || parsed < 1) throw new Error(`${option} requires a positive integer.`);
+  return parsed;
+}
+
+function nonNegativeInteger(input, option) {
+  const parsed = Number(input);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error(`${option} requires a non-negative integer.`);
   return parsed;
 }
 

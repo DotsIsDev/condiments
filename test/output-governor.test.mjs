@@ -3,10 +3,23 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import test from "node:test";
 import {
+  assessOutputCapEconomics,
   classifyOutputTask,
   resolveAdaptiveOutputPolicy,
   resolveGovernorRetry,
+  resolveToolRoundDecision,
 } from "../src/output-governor.mjs";
+
+test("applies Mayo only when predicted output savings repay policy input", () => {
+  assert.equal(assessOutputCapEconomics({ policyInputTokens: 20, projectedOutputSavingsTokens: 20 }).apply, false);
+  assert.equal(assessOutputCapEconomics({ policyInputTokens: 20, projectedOutputSavingsTokens: 21 }).apply, true);
+  const skipped = resolveAdaptiveOutputPolicy({
+    level: "full", taskClass: "standard", enforceEconomics: true,
+    outputEconomics: { policyInputTokens: 30, projectedOutputSavingsTokens: 12 },
+  });
+  assert.equal(skipped.active, false);
+  assert.equal(skipped.reason, "policy-cost-not-repaid");
+});
 
 test("classifies micro, standard, complex, and direct-edit final tasks", () => {
   assert.equal(classifyOutputTask("status").taskClass, "micro");
@@ -48,6 +61,30 @@ test("direct edits suppress recap and final phase forbids more tools", () => {
   assert.equal(policy.toolCallCap, 0);
   assert.equal(policy.suppressRecap, true);
   assert.match(policy.contract, /No recap/);
+});
+
+test("limits normal work to one discovery and verification round, then requires justified missing evidence", () => {
+  assert.equal(resolveToolRoundDecision({ level: "full", toolPhase: "discovery", roundsUsed: 0 }).allow, true);
+  assert.equal(resolveToolRoundDecision({ level: "full", toolPhase: "discovery", roundsUsed: 1 }).reason, "sufficient-evidence");
+  assert.equal(resolveToolRoundDecision({
+    level: "full", toolPhase: "verification", roundsUsed: 1, requiredEvidenceMissing: true,
+  }).reason, "justification-required");
+  const exception = resolveToolRoundDecision({
+    level: "full", toolPhase: "verification", roundsUsed: 1, requiredEvidenceMissing: true,
+    justification: "test failure omitted the expected line",
+  });
+  assert.equal(exception.allow, true);
+  assert.equal(exception.exceptional, true);
+  assert.equal(resolveToolRoundDecision({
+    level: "full", existingResultAvailable: true,
+  }).reason, "reuse-existing-result");
+});
+
+test("expands a response cap when required evidence cannot fit", () => {
+  const policy = resolveAdaptiveOutputPolicy({ level: "full", taskClass: "standard", requiredEvidenceTokens: 700 });
+  assert.equal(policy.baseOutputTokenCap, 512);
+  assert.equal(policy.outputTokenCap, 764);
+  assert.equal(policy.capExpandedForEvidence, true);
 });
 
 test("retries only missing required results and raises cap", () => {

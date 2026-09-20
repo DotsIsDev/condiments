@@ -4,6 +4,7 @@ import path from "node:path";
 import { createDefaultState, normalizeState, resolveLevels } from "./core.mjs";
 import { offloadToolResult } from "./result-envelope.mjs";
 import { COMMAND_GUARD_PROFILES } from "./command-guard.mjs";
+import { recordToolResult } from "./tool-state.mjs";
 
 const HOSTS = new Set(["openclaw", "claude-code", "codex-cli", "cursor"]);
 const LEVELS = new Set(["none", "some", "full"]);
@@ -65,7 +66,7 @@ export async function installNativeOutputHooks(host, targetRoot) {
       installed: true,
       supported: true,
       configPath,
-      scope: "oversized literal whole-file shell reads",
+      scope: "oversized literal whole-file shell reads and tool-heavy round enforcement",
       event: "PreToolUse:Bash",
       limitation: "PostToolUse replacement remains unavailable",
     };
@@ -103,8 +104,8 @@ export async function applyNativeOutputPolicy(host, targetRoot, level) {
     detail = {
       applied: true,
       supported: true,
-      mode: level === "none" ? "pass-through" : "PreToolUse large-read guard",
-      scope: "oversized literal whole-file shell reads",
+      mode: level === "none" ? "pass-through" : "PreToolUse large-read and tool-round guard",
+      scope: "oversized literal whole-file shell reads and tool-heavy round enforcement",
       profile: level === "none" ? null : COMMAND_GUARD_PROFILES[level],
       limitation: "Codex PostToolUse cannot replace output already produced",
     };
@@ -144,6 +145,7 @@ export async function interceptNativeToolOutput(payload, options = {}) {
   const original = extractToolOutput(payload, host);
   if (original === undefined) return { action: "missing-output", level, output: {} };
   const serialized = serializeToolOutput(original);
+  const toolState = await captureToolState(root, payload, tool, serialized, original);
   const profile = NATIVE_OUTPUT_PROFILES[level];
   const envelope = await offloadToolResult({
     tool,
@@ -155,14 +157,14 @@ export async function interceptNativeToolOutput(payload, options = {}) {
     ...profile,
   });
 
-  if (!envelope.truncated) return { action: "pass", level, output: {} };
+  if (!envelope.truncated) return { action: "pass", level, toolState, output: {} };
   const replacement = replacementFor(original, envelope, {
     allowWholeObject: isCursorMcp || isMcpTool(tool),
     targetChars: profile.thresholdChars,
   });
   if (!replacement.changed) {
     await logEvent(root, { host, level, tool, envelope, action: "archived-unreplaceable", replacementChars: serialized.length });
-    return { action: "archived-unreplaceable", level, envelope, output: {} };
+    return { action: "archived-unreplaceable", level, envelope, toolState, output: {} };
   }
 
   const output = host === "claude-code"
@@ -181,7 +183,40 @@ export async function interceptNativeToolOutput(payload, options = {}) {
     action: "intercepted",
     replacementChars: JSON.stringify(output).length,
   });
-  return { action: "intercepted", level, envelope, output };
+  return { action: "intercepted", level, envelope, toolState, output };
+}
+
+async function captureToolState(root, payload, tool, serialized, original) {
+  const sessionId = payload?.session_id ?? payload?.sessionId ?? payload?.conversation_id ?? payload?.conversationId;
+  const prompt = payload?.user_prompt ?? payload?.userPrompt ?? payload?.prompt ?? payload?.task;
+  const turnId = payload?.turn_id ?? payload?.turnId ?? (prompt ? `prompt:${String(prompt)}` : null);
+  const toolInput = payload?.tool_input;
+  const call = typeof toolInput?.command === "string"
+    ? toolInput.command
+    : typeof toolInput?.cmd === "string"
+      ? toolInput.cmd
+      : toolInput === undefined ? tool : `${tool}:${stableJson(toolInput)}`;
+  if (!sessionId || !turnId || !call) return { recorded: false, reason: "identity-unavailable" };
+  try {
+    const result = await recordToolResult(root, {
+      sessionId: String(sessionId),
+      turnId: String(turnId),
+      tool,
+      call,
+      inputFingerprint: toolInput?.workspace_fingerprint ?? payload?.workspace_fingerprint ?? "",
+      exitStatus: exitStatus(original),
+      content: serialized,
+    });
+    return { recorded: true, record: result.record };
+  } catch (error) {
+    return { recorded: false, reason: error.message };
+  }
+}
+
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`;
+  return JSON.stringify(value);
 }
 
 function replacementFor(original, envelope, options) {

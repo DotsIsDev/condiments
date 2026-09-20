@@ -12,6 +12,8 @@ export const CHECKPOINT_FIELDS = Object.freeze([
 ]);
 
 export const CHECKPOINT_MAX_BYTES = 16_000;
+export const CHECKPOINT_PRESSURE_THRESHOLDS = Object.freeze({ some: 0.85, full: 0.70 });
+export const CHECKPOINT_MINIMUM_TURNS = 4;
 
 const LIST_LIMITS = Object.freeze({
   constraints: { maxItems: 20, maxItemChars: 1_000 },
@@ -43,6 +45,32 @@ export function checkpointTemplate() {
     opaque_identifiers: [],
     artifact_paths: [],
     next_action: "",
+  };
+}
+
+export function resolveCheckpointDecision(options = {}) {
+  const level = String(options.level ?? "full").toLowerCase();
+  if (!["none", "some", "full"].includes(level)) throw new Error(`Unknown checkpoint level '${options.level}'.`);
+  if (level === "none") return { create: false, level, reason: "inactive", pressure: null, threshold: null };
+  if (options.explicit === true) return { create: true, level, reason: "explicit", pressure: null, threshold: CHECKPOINT_PRESSURE_THRESHOLDS[level] };
+
+  const turnCount = nonNegativeInteger(options.turnCount ?? 0, "turnCount");
+  const threshold = CHECKPOINT_PRESSURE_THRESHOLDS[level];
+  if (turnCount < CHECKPOINT_MINIMUM_TURNS) {
+    return { create: false, level, reason: "short-session", pressure: pressure(options), threshold, minimumTurns: CHECKPOINT_MINIMUM_TURNS };
+  }
+  if (options.compactionImminent === true) {
+    return { create: true, level, reason: "compaction-imminent", pressure: pressure(options), threshold, minimumTurns: CHECKPOINT_MINIMUM_TURNS };
+  }
+  const ratio = pressure(options);
+  if (ratio === null) return { create: false, level, reason: "pressure-unavailable", pressure: null, threshold, minimumTurns: CHECKPOINT_MINIMUM_TURNS };
+  return {
+    create: ratio >= threshold,
+    level,
+    reason: ratio >= threshold ? (options.milestone === true ? "milestone-under-pressure" : "context-pressure") : "below-pressure-threshold",
+    pressure: ratio,
+    threshold,
+    minimumTurns: CHECKPOINT_MINIMUM_TURNS,
   };
 }
 
@@ -147,4 +175,17 @@ function validateList(value, field, limits, errors) {
 function deduplicate(value) {
   if (!Array.isArray(value)) return value;
   return [...new Set(value)];
+}
+
+function pressure(options) {
+  const used = Number(options.usedTokens);
+  const window = Number(options.contextWindowTokens);
+  if (!Number.isFinite(used) || used < 0 || !Number.isFinite(window) || window <= 0) return null;
+  return used / window;
+}
+
+function nonNegativeInteger(value, name) {
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error(`${name} must be a non-negative integer.`);
+  return parsed;
 }

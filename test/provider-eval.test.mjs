@@ -8,12 +8,13 @@ import { buildEvaluationPrompt, parseHostOutput, verifyEvaluationAnswer } from "
 
 test("provider prompts add policies only for optimized modes", () => {
   const workload = { prompt: "Find TargetSymbol." };
-  assert.doesNotMatch(buildEvaluationPrompt(workload, "baseline"), /<condiments>/);
-  assert.match(buildEvaluationPrompt(workload, "some"), /u=s/);
-  assert.match(buildEvaluationPrompt(workload, "full"), /u=f/);
+  assert.doesNotMatch(buildEvaluationPrompt(workload, "baseline"), /<cond-/);
+  assert.match(buildEvaluationPrompt(workload, "some"), /<cond-mayo>/);
+  assert.match(buildEvaluationPrompt(workload, "some"), /<cond-ranch>/);
+  assert.match(buildEvaluationPrompt(workload, "full"), /<cond-hot>/);
   const mayoOnly = buildEvaluationPrompt(workload, "full", { control: "mayo" });
-  assert.match(mayoOnly, /m=f/);
-  assert.doesNotMatch(mayoOnly, /u=f/);
+  assert.match(mayoOnly, /<cond-mayo>/);
+  assert.doesNotMatch(mayoOnly, /<cond-ranch>/);
 });
 
 test("quality verifier requires exact file, line, and evidence", () => {

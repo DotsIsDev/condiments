@@ -1,7 +1,9 @@
 import { createHash } from "node:crypto";
-import { appendFile, mkdir, readFile, stat } from "node:fs/promises";
+import { appendFile, mkdir, open, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { createDefaultState, normalizeState, resolveLevels } from "./core.mjs";
+import { classifySavingsWorkload } from "./savings-policy.mjs";
+import { checkToolReuse } from "./tool-state.mjs";
 
 export const COMMAND_GUARD_PROFILES = Object.freeze({
   some: Object.freeze({ thresholdBytes: 320_000, previewLines: 400 }),
@@ -9,6 +11,9 @@ export const COMMAND_GUARD_PROFILES = Object.freeze({
 });
 
 const BYPASS_MARKER = "condiments:allow-large-output";
+const EXTRA_ROUND_MARKER = /(?:#|\/\/)?\s*condiments:extra-tool=([^\r\n;]+)/i;
+const VERIFICATION_COMMAND = /(?:^|[;&|]\s*|\s)(?:npm\s+(?:test|run\s+(?:test|lint|build|check|typecheck))|pnpm\s+(?:test|lint|build)|yarn\s+(?:test|lint|build)|pytest|jest|vitest|cargo\s+(?:test|check)|go\s+test|dotnet\s+test|mvn\s+test|gradle\s+test|ruff|eslint|tsc)(?:\s|$)/i;
+const TOOL_HEAVY_COMMAND = /\b(?:test|pytest|jest|vitest|lint|typecheck|build|benchmark|profile|trace|logs?|tail)\b/i;
 const BOUNDED_PATTERNS = Object.freeze([
   /\b(?:rg|grep|select-string)\b/i,
   /\b(?:head|tail)\b/i,
@@ -34,7 +39,29 @@ export async function guardCodexCommand(payload, options = {}) {
     cwd: root,
     ...COMMAND_GUARD_PROFILES[level],
   });
-  if (!analysis.risky) return { action: analysis.action, level, analysis, output: {} };
+  if (!analysis.risky) {
+    const reuse = await checkExistingToolResult(root, payload, command);
+    if (reuse?.allow === false) {
+      return {
+        action: "blocked",
+        level,
+        analysis,
+        reuse,
+        output: denial(reuse.instruction),
+      };
+    }
+    const round = await enforceToolRound(root, payload, command, level);
+    if (round?.allow === false) {
+      return {
+        action: "blocked",
+        level,
+        analysis,
+        round,
+        output: denial(round.reason),
+      };
+    }
+    return { action: analysis.action, level, analysis, round: round ?? null, output: {} };
+  }
 
   const reason = buildBlockReason(analysis);
   await logBlock(root, { level, command, analysis });
@@ -50,6 +77,134 @@ export async function guardCodexCommand(payload, options = {}) {
       },
     },
   };
+}
+
+async function checkExistingToolResult(root, payload, command) {
+  const identity = rawToolStateIdentity(payload);
+  if (!identity) return null;
+  return checkToolReuse(root, {
+    ...identity,
+    tool: "Bash",
+    call: command,
+    inputFingerprint: payload?.tool_input?.workspace_fingerprint ?? payload?.workspace_fingerprint ?? "",
+    inputsChanged: payload?.tool_input?.inputs_changed === true || payload?.inputs_changed === true,
+    justification: extractJustification(payload, command),
+  });
+}
+
+function rawToolStateIdentity(payload) {
+  const sessionId = payload?.session_id ?? payload?.sessionId ?? payload?.conversation_id ?? payload?.conversationId;
+  const explicitTurn = payload?.turn_id ?? payload?.turnId;
+  const prompt = extractTask(payload);
+  const turnId = explicitTurn ?? (prompt ? `prompt:${createHash("sha256").update(prompt).digest("hex")}` : null);
+  return sessionId && turnId ? { sessionId: String(sessionId), turnId: String(turnId) } : null;
+}
+
+export async function enforceToolRound(root, payload, command, level) {
+  const identity = roundIdentity(payload);
+  if (!identity) return null;
+  const task = extractTask(payload);
+  const workload = task
+    ? classifySavingsWorkload(task).workload
+    : TOOL_HEAVY_COMMAND.test(command) ? "tool-heavy" : "general";
+  if (workload !== "tool-heavy") return null;
+
+  const phase = VERIFICATION_COMMAND.test(command) ? "verification" : "discovery";
+  const hashValue = createHash("sha256").update(normalizeCommand(command)).digest("hex");
+  const ledgerPath = path.join(root, ".condiments", "tool-rounds", identity.session, `${identity.turn}.json`);
+  const release = await acquireLedgerLock(ledgerPath);
+  try {
+    const ledger = await readLedger(ledgerPath);
+    if (ledger.command_hashes.includes(hashValue)) return { allow: false, phase, reason: "Condiments blocked duplicate tool call; reuse the existing result." };
+
+    const justification = extractJustification(payload, command);
+    const normalUsed = Number(ledger.rounds[phase] ?? 0);
+    let exceptional = false;
+    if (normalUsed >= 1) {
+      if (!justification) return { allow: false, phase, reason: `Condiments ${phase} round already used; an extra call requires missing-evidence justification.` };
+      if (ledger.exceptional >= 1) return { allow: false, phase, reason: "Condiments exceptional tool round already used." };
+      exceptional = true;
+    }
+
+    ledger.command_hashes.push(hashValue);
+    if (exceptional) ledger.exceptional += 1;
+    else ledger.rounds[phase] = normalUsed + 1;
+    await writeLedger(ledgerPath, ledger);
+    return { allow: true, phase, exceptional, reason: exceptional ? "required-evidence-exception" : `${phase}-round-available` };
+  } finally {
+    await release();
+  }
+}
+
+function denial(reason) {
+  return { hookSpecificOutput: { hookEventName: "PreToolUse", permissionDecision: "deny", permissionDecisionReason: reason } };
+}
+
+function roundIdentity(payload) {
+  const session = payload?.session_id ?? payload?.sessionId ?? payload?.conversation_id ?? payload?.conversationId;
+  const explicitTurn = payload?.turn_id ?? payload?.turnId;
+  const prompt = extractTask(payload);
+  const turn = explicitTurn ?? (prompt ? `prompt:${createHash("sha256").update(prompt).digest("hex")}` : null);
+  if (!session || !turn) return null;
+  return {
+    session: createHash("sha256").update(String(session)).digest("hex").slice(0, 32),
+    turn: createHash("sha256").update(String(turn)).digest("hex").slice(0, 32),
+  };
+}
+
+function extractTask(payload) {
+  return String(payload?.user_prompt ?? payload?.userPrompt ?? payload?.prompt ?? payload?.task ?? "").trim();
+}
+
+function extractJustification(payload, command) {
+  const explicit = payload?.tool_input?.condiments_justification ?? payload?.tool_input?.justification;
+  if (String(explicit ?? "").trim() && (payload?.tool_input?.required_evidence_missing === true || payload?.required_evidence_missing === true)) return String(explicit).trim();
+  return command.match(EXTRA_ROUND_MARKER)?.[1]?.trim() ?? "";
+}
+
+function normalizeCommand(command) {
+  return String(command).replace(EXTRA_ROUND_MARKER, "").trim().replace(/\s+/g, " ");
+}
+
+async function readLedger(filePath) {
+  try {
+    const value = JSON.parse(await readFile(filePath, "utf8"));
+    return { version: 1, rounds: { discovery: Number(value?.rounds?.discovery ?? 0), verification: Number(value?.rounds?.verification ?? 0) }, exceptional: Number(value?.exceptional ?? 0), command_hashes: Array.isArray(value?.command_hashes) ? value.command_hashes : [] };
+  } catch (error) {
+    if (error?.code === "ENOENT") return { version: 1, rounds: { discovery: 0, verification: 0 }, exceptional: 0, command_hashes: [] };
+    throw error;
+  }
+}
+
+async function writeLedger(filePath, ledger) {
+  await mkdir(path.dirname(filePath), { recursive: true });
+  const temporaryPath = `${filePath}.${process.pid}.tmp`;
+  await writeFile(temporaryPath, `${JSON.stringify(ledger, null, 2)}\n`, "utf8");
+  await rename(temporaryPath, filePath);
+}
+
+async function acquireLedgerLock(ledgerPath) {
+  await mkdir(path.dirname(ledgerPath), { recursive: true });
+  const lockPath = `${ledgerPath}.lock`;
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    try {
+      const handle = await open(lockPath, "wx");
+      return async () => {
+        await handle.close();
+        await unlink(lockPath).catch((error) => { if (error?.code !== "ENOENT") throw error; });
+      };
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      try {
+        const details = await stat(lockPath);
+        if (Date.now() - details.mtimeMs > 30_000) await unlink(lockPath);
+      } catch (staleError) {
+        if (staleError?.code !== "ENOENT") throw staleError;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+  }
+  throw new Error("Condiments tool-round ledger is busy.");
 }
 
 export async function analyzeFileRead(command, options = {}) {

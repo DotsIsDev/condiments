@@ -943,7 +943,10 @@ The largest gain came from filtering large command output inside the command and
 5. [x] Keep Anthropic, OpenClaw, and host-only tool limits as explicit prompt contracts when no native field exists.
 6. [x] Retry only when a named required result is absent or invalid; increase 128 → 512 → 2,048 and stop after two retries.
 7. [x] Preserve fixed provider limits as fallback when no task evidence is supplied.
-8. [ ] Run live direct-edit and answer quality evaluation after the current usage window resets.
+8. [x] Run live direct-edit and answer quality evaluation after the current usage window resets.
+   The 2026-09-20 paired matrix passed all 18 exact-edit gates across Luna, Sol, and Astra, but token effects varied by model. See [paired-live-evaluation-v0.1.4.md](../evals/results/paired-live-evaluation-v0.1.4.md).
+9. [x] Enforce one discovery plus one verification round, reuse existing results, and require a justified missing-evidence exception.
+10. [x] Preserve required evidence by artifact or expanded cap instead of truncating it.
 
 ## 28. Verification-Aware Query Compressor
 
@@ -957,7 +960,8 @@ The largest gain came from filtering large command output inside the command and
 7. [x] Retrieve only missing evidence and stop after one `some` or two `full` recovery rounds.
 8. [x] Store content-free, deduplicated compression telemetry and aggregate verified token reductions.
 9. [x] Add CLI, capability flags, adapter packaging, policy documentation, and deterministic tests.
-10. [ ] Run paired live coding evaluation with exact-file, test, error-evidence, and citation-grounding gates.
+10. [x] Run paired live coding evaluation with exact-file, test, error-evidence, and citation-grounding gates.
+    The live matrix found model-dependent results and a Ranch-driven tool-round regression; no general savings claim is allowed. See [paired-live-evaluation-v0.1.4.md](../evals/results/paired-live-evaluation-v0.1.4.md).
 
 ## 29. Lossless Dictionary Compression for Repetitive Logs
 
@@ -989,6 +993,7 @@ The largest gain came from filtering large command output inside the command and
 3. [x] Enforce commit/expand/fold lifecycle bounds, action deduplication, summary similarity deduplication, and hash verification.
 4. [x] Add CLI, adapter bundle, capability flags, documentation, and corruption/recovery tests.
 5. [ ] Run long-session `none`/`some`/`full` evaluation with forced exact raw expansion only when checkpoint verification fails.
+6. [x] Gate checkpoint creation on established sessions near context pressure; skip short sessions.
 
 ## 32. Significance-Aware Output and Hierarchical Budgets
 
@@ -998,7 +1003,8 @@ The largest gain came from filtering large command output inside the command and
 4. [x] Split task caps exactly across locate, inspect, edit, verify, and report; favor verification and reduce direct-edit recap.
 5. [x] Learn phase shares only from eight matching verified samples and detect inverse token elasticity.
 6. [x] Add CLI, adapter bundle, capability flags, documentation, and deterministic tests.
-7. [ ] Run paired live edit/answer evaluation before training phase shares from provider telemetry.
+7. [x] Run paired live edit/answer evaluation before training phase shares from provider telemetry.
+   Quality passed, but shorter output did not consistently reduce total tokens. Keep learned phase shares disabled by default. See [paired-live-evaluation-v0.1.4.md](../evals/results/paired-live-evaluation-v0.1.4.md).
 
 ## 33. Query-Conditioned Context Allocation
 
@@ -1006,7 +1012,8 @@ The largest gain came from filtering large command output inside the command and
 2. [x] Penalize repetitive optional evidence while leaving locked evidence unaffected.
 3. [x] Keep locked evidence at the front and strongest optional evidence at an ending attention boundary.
 4. [x] Expose content-free score components while preserving fail-closed sufficiency and bounded recovery.
-5. [ ] Run paired live repository evaluation with provider-reported input and exact quality gates.
+5. [x] Run paired live repository evaluation with provider-reported input and exact quality gates.
+   Three counterbalanced Luna repeats plus Sol and Astra spot checks showed workload- and model-dependent outcomes. See [paired-live-evaluation-v0.1.4.md](../evals/results/paired-live-evaluation-v0.1.4.md).
 
 ## 34. Optional Learned Compression and Qwen Controls
 
@@ -1017,3 +1024,16 @@ The largest gain came from filtering large command output inside the command and
 5. [x] Add CLIs, adapter bundle, truthful native capability flags, documentation, and deterministic tests.
 6. [ ] Measure LLMLingua wall time and provider tokens on prose-heavy workloads with the model installed.
 7. [ ] Run Qwen `none`/`some`/`full` reasoning-token and quality evaluation on an endpoint that reports reasoning usage.
+
+## 35. Evidence-Gated Savings Routing
+
+1. [x] Classify exact-edit, tool-heavy, and general workloads conservatively; keep lookups and simple edits on baseline.
+2. [x] Enable Ranch alone for validated Luna debugging, tests, and noisy commands when `full` is requested; keep unevaluated strengths and evaluated regressions on baseline.
+3. [x] Route unknown model/workload pairs to baseline with an explicit force override.
+4. [x] Preserve byte-stable prompt prefixes, deduplicate stable instructions, and append changing task data last.
+5. [x] Add CLI, references, adapter guidance, and deterministic tests.
+6. [x] Rerun tuned controls: Ranch removed the earlier tool-call regression but stayed workload-dependent; Sol exact-edit `full` regressed 29.6% across two new repeats. See [savings-controls-evaluation-v0.1.4.md](../evals/results/savings-controls-evaluation-v0.1.4.md).
+7. [x] Move duplicate suppression and one-discovery/one-verification enforcement into the Codex pre-tool hook.
+8. [x] Omit policy text for baseline and inject only active controls' small directives.
+9. [x] Preserve cache-sensitive request ordering and delay lineage changes below cached-token break-even.
+10. [x] Gate Mayo task caps on projected output savings exceeding directive input cost.

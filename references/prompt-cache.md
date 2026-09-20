@@ -19,6 +19,22 @@ node scripts/prompt-cache.mjs decorate --provider anthropic --level full --input
 
 The OpenAI cache key is a SHA-256-derived stable identifier. Raw prompt prefixes and explicit cache keys are never written to telemetry.
 
+Assemble cache-friendly prompts with stable material first and the changing task last:
+
+```text
+node scripts/prompt-cache.mjs compose --input prompt-parts.json
+```
+
+The input object contains `stablePrefix`, optional `stableInstructions`, optional `dynamicContext`, and `task`. Assembly preserves the prefix byte-for-byte, removes exact duplicate stable instructions, and never repeats the task in the cached prefix.
+
+For a complete request, use `prepare` with an object containing `request` and `options`. `options` supplies `stablePrefix`, `task`, optional `previousRequest`, and `lineageMetrics`:
+
+```text
+node scripts/prompt-cache.mjs prepare --provider openai --level full --input preparation.json
+```
+
+Preparation keeps model, tools and their order, reasoning, system/prefix, tool behavior, and cache fields stable when losing cached tokens would cost more than the projected input, output, and reasoning savings. It appends changing task data last. Quality-required changes bypass the hold.
+
 ## Telemetry
 
 Native adapter hooks scan completed-turn transcripts and append deduplicated JSONL records to:

@@ -1,0 +1,45 @@
+{
+  "answerSchema": "phase5-answer.schema.json",
+  "hosts": {
+    "luna": {
+      "command": "codex",
+      "args": ["exec", "--ephemeral", "--model", "gpt-5.6-luna", "--skip-git-repo-check", "--sandbox", "read-only", "--output-schema", "{schemaPath}", "--json", "-c", "model_reasoning_effort=\"low\"", "-C", "{repository}", "-"],
+      "outputFormat": "codex-jsonl",
+      "provider": "openai",
+      "timeoutMs": 120000
+    }
+  },
+  "workloads": [
+    {
+      "id": "ranch-one-line-fix",
+      "path": "fixtures/phase5-project",
+      "prompt": "Forced Ranch control evaluation: apply the active Ranch rule even though the savings router normally selects baseline for Luna general work. Requirement: a subtotal of exactly 100 qualifies for loyalty discount. Diagnose the one-line bug without editing. Answer with the exact corrected condition only. Cite the buggy line.",
+      "expected": { "answerEquals": "subtotal >= 100", "evidence": [{ "file": "src/discount.mjs", "line": 2, "quoteIncludes": "subtotal > 100" }] }
+    },
+    {
+      "id": "ranch-repository-exploration",
+      "path": "fixtures/phase5-project",
+      "prompt": "Forced Ranch control evaluation: apply the active Ranch rule even though the savings router normally selects baseline for Luna general work. Find where applicationRouter is constructed. Answer with constructor symbol name only. Cite its call site.",
+      "expected": { "answerEquals": "createRouter", "evidence": [{ "file": "src/router.mjs", "line": 5, "quoteIncludes": "createRouter" }] }
+    },
+    {
+      "id": "ranch-test-debug-loop",
+      "path": "fixtures/phase5-project",
+      "prompt": "Forced Ranch control evaluation: apply the active Ranch rule even though the savings router normally selects baseline for Luna general work. Run the test suite, diagnose the failing implementation, but do not edit. Answer with the exact corrected return statement. Cite the faulty source line and list the test command used.",
+      "expected": { "answerIncludes": "return value * 2;", "evidence": [{ "file": "src/double.mjs", "line": 2, "quoteIncludes": "value + 2" }] }
+    },
+    {
+      "id": "ranch-large-command-output",
+      "path": "fixtures/phase5-project",
+      "prompt": "Forced Ranch control evaluation: apply the active Ranch rule even though the savings router normally selects baseline for Luna general work. Run `node scripts/noisy.mjs`. Find the actionable error token amid large output. Answer with token only. Cite the script line producing it and list the command used.",
+      "expected": { "answerEquals": "TOKEN_SALT_MISMATCH", "evidence": [{ "file": "scripts/noisy.mjs", "line": 4, "quoteIncludes": "TOKEN_SALT_MISMATCH" }] }
+    },
+    {
+      "id": "mayo-explanation",
+      "path": "fixtures/phase5-project",
+      "taskClass": "standard",
+      "prompt": "Do not use tools. In one sentence under 45 words, explain why placing stable instructions before changing task data can improve prompt-cache reuse. Include the exact phrase `stable prefix`.",
+      "expected": { "answerIncludes": "stable prefix", "evidence": [] }
+    }
+  ]
+}

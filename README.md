@@ -117,6 +117,10 @@ node scripts/install-adapter.mjs --host codex-cli --target /path/to/project
 
 ## Latest Changes
 
+- **Progressive skill disclosure:** installations now load a stable core, the current host module, and only the active controls. Command-only requests keep their existing fast path.
+- **Zero-token local memory:** exact, content-addressed evidence can be recovered from a local signal index without a provider request. Consolidation remains off for short sessions and waits for repeated evidence near context pressure.
+- **Compact tool state:** Ranch records exact tool results as local artifacts, reuses successful results, and blocks unchanged failed calls unless inputs change or extra evidence is justified.
+- **Amortized workflow pruning:** a workflow step is removed only after at least eight paired samples, no quality regression, a positive 95% lower confidence bound, and enough future runs to repay evaluation cost with a 25% safety margin.
 - **Shared reasoning governor:** direct OpenAI Responses, Anthropic Messages, Qwen, and DeepSeek requests now use one task classifier and bounded escalation policy.
 - **OpenAI:** request-level `reasoning.effort`, optional `previous_response_id` reuse, and cache-lineage protection. Condiments does not generate `configuration_update` items.
 - **Anthropic:** adaptive `output_config.effort` and server-side thinking cleanup, while preserving complete thinking blocks during active tool loops.
@@ -124,6 +128,8 @@ node scripts/install-adapter.mjs --host codex-cli --target /path/to/project
 - **Qwen:** existing hybrid-thinking toggles and budgets now share the same task classification and quality-escalation rules.
 
 All provider controls are capability-gated. Unsupported request surfaces remain unchanged.
+
+The release helpers expose these controls as `condiments-skill-disclosure`, `condiments-zero-memory`, `condiments-tool-state`, and `condiments-workflow-pruner`. Their local storage lives under the ignored `.condiments/` directory. See the linked reference documents in [SKILL.md](SKILL.md) for command syntax and decision rules.
 
 ## Compatibility
 
@@ -145,17 +151,20 @@ See the full [platform capability matrix](references/platform-capabilities.md).
 
 ## Results
 
-Current evidence is promising but deliberately modest. These are workload-specific measurements, not a blanket savings promise.
+Current evidence is model- and workload-specific. The new conservative router enables a preset only for combinations with paired live savings evidence.
 
 | Evaluation | `some` | `full` | Quality gate |
 | --- | ---: | ---: | --- |
-| Live patch-first coding: output tokens | **13.5% less** | **16.2% less** | Tests, exact files, and untouched files passed |
-| Live patch-first coding: total tokens | **2.1% less** | **2.9% less** | Same gate passed |
-| Live concise answer: output tokens | **18.9% less** | **21.3% less** | Exact answer passed |
+| Luna general tasks: total tokens | **12.9% more** | **10.4% more** | 21/24 optimized quality gates passed |
+| Sol exact edits, original run: total tokens | **7.6% more** | **9.8% less** | Exact files, untouched files, and tests passed |
+| Sol exact edits, two replication repeats | — | **29.6% more** | 4/4 exact-file and test gates passed |
+| Astra exact edits: total tokens | **32.1% more** | **26.8% more** | Exact files, untouched files, and tests passed |
+| Luna memory recovery: total tokens | **4.8% more** | **5.2% more** | 9/9 exact recovery checks passed |
+| Forced Luna Ranch, three repeats | — | **5.3% less logical; 30.3% more uncached** | 12/12 gates passed; simple tasks regressed |
 | Offline targeted context proxy | **57.6–99.2% less** | **67.4–99.8% less** | 100% exact-symbol recall |
 | Initial visible tool-schema bytes | **96.0% less** | **95.9% less** | Required tool result passed |
 
-The tiny concise-answer task used about 1% more total tokens because fixed Codex input overhead outweighed the 31–35 output tokens saved. The live tool-schema experiment also showed no material total-token reduction. Condiments therefore currently claims **about 13–21% measured output reduction and 0–3% measured total reduction on its limited live Codex workloads**. Larger context and repetitive-log reductions are validated byte/token proxies until equivalent provider telemetry is collected.
+Condiments does not claim general savings. The earlier Sol exact-edit saving failed replication. With `full` requested, Luna tool-heavy debugging, tests, and noisy commands now enable Ranch alone, where paired runs observed **20.4–23.2% fewer logical tokens**. Lookups, simple edits, unevaluated strengths, and unevaluated model/workload pairs stay on baseline. Baseline requests omit policy text, and native Ranch enforcement avoids prompt overhead where available. Larger context and repetitive-log reductions remain byte/token proxies until equivalent provider telemetry is collected.
 
 ### Estimated reasoning savings
 
@@ -176,6 +185,8 @@ Read the evidence:
 - [Tool-context evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/tool-context-evaluation.md)
 - [Lossless log and learned-cap evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/optimal-savings-eval.md)
 - [Provider reasoning savings estimate](https://github.com/DotsIsDev/condiments/blob/main/evals/results/provider-reasoning-savings-estimate.md)
+- [Paired live evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/paired-live-evaluation-v0.1.4.md)
+- [Savings-controls replication evaluation](https://github.com/DotsIsDev/condiments/blob/main/evals/results/savings-controls-evaluation-v0.1.4.md)
 - [Implementation and evaluation plan](https://github.com/DotsIsDev/condiments/blob/main/docs/IMPLEMENTATION_PLAN.md)
 
 ## Skill
@@ -228,6 +239,7 @@ Full reviews:
 
 - [Latest algorithmic token-reduction research](research/LATEST_TOKEN_REDUCTION_RESEARCH.md)
 - [Chinese token-efficiency research](research/CHINESE_TOKEN_EFFICIENCY_RESEARCH.md)
+- [Chinese net-token savings update (2026-09-20)](research/CHINESE_NET_TOKEN_SAVINGS_UPDATE_2026-09-20.md)
 - [DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression](research/DeepSeek_V41_Tech_Report.md)
 
 <details>

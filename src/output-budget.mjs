@@ -27,20 +27,30 @@ export function decorateProviderOutputRequest(provider, request, options = {}) {
   }
 
   const output = structuredClone(request);
-  const governor = options.task || options.taskClass
-    ? resolveAdaptiveOutputPolicy(options)
+  const taskAware = Boolean(options.task || options.taskClass);
+  const provisionalGovernor = taskAware
+    ? resolveAdaptiveOutputPolicy({ ...options, enforceEconomics: false })
     : null;
-  const fallbackLimit = governor?.outputTokenCap ?? resolveProviderOutputTokenLimit(level);
-  const learned = fallbackLimit !== null && governor && Array.isArray(options.telemetryRecords)
+  const provisionalLimit = provisionalGovernor?.outputTokenCap ?? resolveProviderOutputTokenLimit(level);
+  const learned = provisionalLimit !== null && provisionalGovernor && Array.isArray(options.telemetryRecords)
     ? selectTelemetryTrainedOutputCap(options.telemetryRecords, {
         provider: kind,
         host: options.host,
         level,
-        taskClass: governor.taskClass,
-        fallbackCap: fallbackLimit,
+        taskClass: provisionalGovernor.taskClass,
+        fallbackCap: provisionalLimit,
       }, options.capTraining)
     : null;
-  const requestedLimit = learned?.cap ?? fallbackLimit;
+  const outputEconomics = deriveOutputEconomics(options.outputEconomics, learned, provisionalGovernor, provisionalLimit);
+  const governor = taskAware
+    ? resolveAdaptiveOutputPolicy({ ...options, enforceEconomics: options.enforceEconomics !== false, outputEconomics })
+    : null;
+  const fallbackLimit = governor
+    ? governor.active ? governor.outputTokenCap : null
+    : resolveProviderOutputTokenLimit(level);
+  const requestedLimit = governor
+    ? governor.active ? learned?.cap ?? fallbackLimit : null
+    : fallbackLimit;
   const control = {
     provider: kind,
     level,
@@ -129,6 +139,19 @@ export function decorateProviderOutputRequest(provider, request, options = {}) {
   }
 
   return { request: output, control };
+}
+
+function deriveOutputEconomics(value, learned, governor, fallbackLimit) {
+  const supplied = value && typeof value === "object" ? value : {};
+  if (Number.isFinite(Number(supplied.projectedOutputSavingsTokens))) return supplied;
+  if (!learned?.applied || !governor?.contract) return supplied;
+  return {
+    ...supplied,
+    policyInputTokens: Number.isFinite(Number(supplied.policyInputTokens))
+      ? Number(supplied.policyInputTokens)
+      : Math.ceil(governor.contract.length / 4),
+    projectedOutputSavingsTokens: Math.max(0, Number(fallbackLimit) - Number(learned.cap)),
+  };
 }
 
 export function detectOutputCapHit(provider, payload) {

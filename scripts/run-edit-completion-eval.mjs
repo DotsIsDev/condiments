@@ -37,7 +37,7 @@ async function main() {
   let observedTokens = runs.reduce((sum, run) => sum + Number(run.total_tokens || 0), 0);
   let stopped = false;
 
-  for (const mode of MODES) {
+  for (const mode of options.modes) {
     for (const workload of WORKLOADS) {
       if (runs.some((run) => run.mode === mode && run.workload === workload.id && run.verified)) continue;
       if (observedTokens >= options.maxTotalTokens - options.delayedTokenReserve) {
@@ -123,18 +123,19 @@ async function main() {
 }
 
 function buildReport(options, runs, observedTokens, stopped) {
-  const summaries = Object.fromEntries(MODES.map((mode) => {
+  const summaries = Object.fromEntries(options.modes.map((mode) => {
     const selected = runs.filter((run) => run.mode === mode);
     return [mode, selected.length ? summarizeRuns(selected) : null];
   }));
-  const comparisons = Object.fromEntries(["some", "full"].map((mode) => [mode, compare(summaries.baseline, summaries[mode])]));
-  const complete = runs.length === MODES.length * WORKLOADS.length;
+  const comparisons = Object.fromEntries(options.modes.filter((mode) => mode !== "baseline").map((mode) => [mode, compare(summaries.baseline, summaries[mode])]));
+  const complete = runs.length === options.modes.length * WORKLOADS.length;
   return {
     version: 1,
     generatedAt: new Date().toISOString(),
     host: "codex-cli",
     model: options.model,
     workloads: WORKLOADS.map((workload) => workload.id),
+    modes: options.modes,
     budget: { max_total_tokens: options.maxTotalTokens, delayed_token_reserve: options.delayedTokenReserve, observed_tokens: observedTokens, stopped },
     complete,
     verified: complete && runs.every((run) => run.verified),
@@ -237,7 +238,7 @@ function countWords(value) {
 
 function markdown(report) {
   const rows = report.runs.map((run) => `| ${run.mode} | ${run.workload} | ${run.verified ? "yes" : "no"} | ${run.output_tokens} | ${run.total_tokens} | ${run.response_words} | ${run.direct_edit_observed ? "yes" : "no"} |`).join("\n");
-  const comparisonRows = ["some", "full"].map((mode) => {
+  const comparisonRows = report.modes.filter((mode) => mode !== "baseline").map((mode) => {
     const value = report.comparisons[mode];
     return `| ${mode} | ${value?.output_reduction_percent ?? "n/a"}% | ${value?.total_reduction_percent ?? "n/a"}% | ${value?.quality_passed ? "yes" : "no"} |`;
   }).join("\n");
@@ -255,6 +256,7 @@ function parseOptions(args) {
     delayedTokenReserve: 160_000,
     resume: false,
     rerunModes: [],
+    modes: MODES,
   };
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -267,10 +269,13 @@ function parseOptions(args) {
     else if (arg === "--delayed-token-reserve") options.delayedTokenReserve = positive(value(args, ++index, arg), arg);
     else if (arg === "--resume") options.resume = true;
     else if (arg === "--rerun-mode") options.rerunModes.push(value(args, ++index, arg));
+    else if (arg === "--modes") options.modes = value(args, ++index, arg).split(",").filter(Boolean);
     else throw new Error(`Unknown option '${arg}'.`);
   }
   if (options.delayedTokenReserve >= options.maxTotalTokens) throw new Error("Delayed reserve must be below total budget.");
   for (const mode of options.rerunModes) if (!MODES.includes(mode)) throw new Error(`Unknown rerun mode '${mode}'.`);
+  for (const mode of options.modes) if (!MODES.includes(mode)) throw new Error(`Unknown mode '${mode}'.`);
+  if (!options.modes.includes("baseline")) throw new Error("Evaluation modes must include baseline.");
   return options;
 }
 

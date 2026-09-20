@@ -17,6 +17,80 @@ const HOSTS = new Set(Object.keys(HOST_PROVIDERS));
 const LEVELS = new Set(["none", "some", "full"]);
 const HOOK_MARKER = "scripts/cache-hook.mjs";
 
+export function composeCacheFriendlyPrompt(options = {}) {
+  const stablePrefix = String(options.stablePrefix ?? "");
+  if (!stablePrefix) throw new Error("stablePrefix is required.");
+  const stableInstructions = uniqueExact([
+    stablePrefix,
+    ...arrayOfText(options.stableInstructions),
+  ]);
+  const dynamicContext = arrayOfText(options.dynamicContext);
+  const task = String(options.task ?? "");
+  if (!task.trim()) throw new Error("task is required.");
+  const blocks = [
+    ...stableInstructions,
+    ...dynamicContext,
+    task,
+  ];
+  return {
+    prompt: blocks.join("\n\n"),
+    stablePrefix,
+    stablePrefixFingerprint: `sha256:${hash(stablePrefix)}`,
+    stableInstructionCount: stableInstructions.length,
+    removedDuplicateInstructions: 1 + arrayOfText(options.stableInstructions).length - stableInstructions.length,
+    taskAtEnd: true,
+  };
+}
+
+export function prepareCacheAwareRequest(provider, request, options = {}) {
+  const kind = assertProvider(provider);
+  if (!request || typeof request !== "object" || Array.isArray(request)) throw new Error("Provider request must be an object.");
+  const task = String(options.task ?? "").trim();
+  if (!task) throw new Error("task is required.");
+  const stablePrefix = String(options.stablePrefix ?? (kind === "anthropic" ? request.system : request.instructions) ?? "");
+  if (!stablePrefix) throw new Error("stablePrefix is required.");
+  const stableInstructions = uniqueExact([stablePrefix, ...arrayOfText(options.stableInstructions)]);
+  const stableBlock = stableInstructions.join("\n\n");
+  const taskTail = [...arrayOfText(options.dynamicContext), task].join("\n\n");
+  const assembly = {
+    prompt: [stableBlock, taskTail].join("\n\n"),
+    requestTask: taskTail,
+    stablePrefix,
+    stablePrefixFingerprint: `sha256:${hash(stablePrefix)}`,
+    stableInstructionCount: stableInstructions.length,
+    removedDuplicateInstructions: 1 + arrayOfText(options.stableInstructions).length - stableInstructions.length,
+    taskAtEnd: true,
+  };
+  const candidate = structuredClone(request);
+  if (kind === "anthropic") {
+    candidate.system = stableBlock;
+    candidate.messages = [...(Array.isArray(candidate.messages) ? candidate.messages : []), { role: "user", content: taskTail }];
+  } else {
+    candidate.instructions = stableBlock;
+    candidate.input = taskTail;
+  }
+
+  const decorated = decoratePromptCacheRequest(kind, candidate, {
+    ...options,
+    stablePrefix,
+    previousRequest: undefined,
+  });
+  if (!options.previousRequest || !["openai", "anthropic", "canonical"].includes(kind)) {
+    return { request: decorated.request, assembly, control: decorated.control, lineage: null };
+  }
+  const guarded = guardCacheLineage(kind, options.previousRequest, decorated.request, options.lineageMetrics ?? {}, {
+    level: options.level ?? "some",
+    preserveFields: options.preserveLineageFields ?? ["model", "tools", "system", "reasoning", "tool_behavior", "cache"],
+    stableMessages: options.stableMessages,
+  });
+  return {
+    request: guarded.request,
+    assembly,
+    control: decorated.control,
+    lineage: guarded.decision,
+  };
+}
+
 export function decoratePromptCacheRequest(provider, request, options = {}) {
   const kind = assertProvider(provider);
   const level = assertLevel(options.level ?? "some");
@@ -72,6 +146,15 @@ function withLineage(provider, request, control, options) {
     stableMessages: options.stableMessages,
   });
   return { request: guarded.request, control: { ...control, lineage: guarded.decision } };
+}
+
+function arrayOfText(value) {
+  const values = Array.isArray(value) ? value : value === undefined || value === null ? [] : [value];
+  return values.map((item) => String(item)).filter((item) => item.trim() !== "");
+}
+
+function uniqueExact(values) {
+  return [...new Set(values)];
 }
 
 export function createCacheTelemetryRecord(provider, payload, metadata = {}) {

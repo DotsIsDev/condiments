@@ -12,6 +12,8 @@ Before native compaction, the hook:
 4. Generates and validates a checkpoint under the 16,000-byte schema limit.
 5. Writes `.condiments/checkpoints/<session>.json` and `latest.json` atomically.
 
+Outside a host `PreCompact` event, use `scripts/checkpoint.mjs decide`. `some` triggers at 85% context pressure and `full` at 70%, after at least four turns. Short sessions are skipped unless the caller explicitly requests a checkpoint.
+
 Recent verified assistant results and identifier-shaped exact values are retained even when they are not phrased as decisions. This prevents checkpoint recovery from silently keeping only task instructions.
 
 Hook telemetry is appended to `.condiments/native-context/events.jsonl`. Native-setting application is recorded in `last-apply.json`. Full transcripts are never printed into hook output.
